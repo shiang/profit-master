@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { CalculatorContext } from './CalculatorProvider'
 import { Button } from 'react-native-paper'
+import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
 
 interface Props {
   navigation: NavigationStackProp<{}>
