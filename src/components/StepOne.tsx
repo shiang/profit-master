@@ -17,7 +17,6 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation }) => {
 
   const [ rrp, setRrp ] = useState<string>('')
   const [ gst, setGst ] = useState<string>('')
-  console.log({state})
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ padding: 25 }}>

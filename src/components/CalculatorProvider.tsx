@@ -16,6 +16,7 @@ type Action =
   | { type: 'STEP_1', payload: { rrp: string, gst: string } }
   | { type: 'STEP_2', payload: { margin: string, disty: string, rebate: string } }
   | { type: 'FINAL_STEP', payload: { fobPrice: string, forexRate: string, freight: string, landedCost: string } }
+  | { type: 'RESET' }
 
 
 interface Props {
@@ -57,6 +58,8 @@ const reducer = (state: CalculatorState, action: Action) => {
         freight: action.payload.freight,
         landedCost: action.payload.landedCost
       }
+    case 'RESET':
+      return initialState
     default:
       return
   }
