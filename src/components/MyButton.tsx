@@ -1,13 +1,17 @@
 import * as React from 'react'
 import { Button } from 'react-native-paper'
 
-const MyButton: React.FC<{}> = () => {
+interface Props {
+  handleSubmit: () => void
+}
+
+const MyButton: React.FC<Props> = ({ handleSubmit }) => {
   return (
     <Button
-      icon='camera'
+      icon='calculator'
       mode='contained'
-      onPress={() => console.log('Pressed')}
-    >Press me</Button>
+      onPress={handleSubmit}
+    >Calculate</Button>
   )
 }
 
