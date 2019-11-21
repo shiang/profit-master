@@ -1,8 +1,8 @@
 import React from 'react'
-import { Text, TextInput } from 'react-native'
+import { Text, KeyboardAvoidingView, Platform, StyleSheet, View, ScrollView, SafeAreaView } from 'react-native'
+import { TextInput } from 'react-native-paper'
 import MyButton from './MyButton'
 import { Formik } from 'formik'
-import { Button } from 'react-native-paper'
 
 interface FormValues {
   gst: string
@@ -27,6 +27,7 @@ const Calculator: React.FC<{}> = () => {
     rrp: ''
   }
   return (
+
     <Formik
       initialValues={initialValues}
       onSubmit={(values, actions) => {
@@ -39,63 +40,92 @@ const Calculator: React.FC<{}> = () => {
     >
       {({ handleSubmit, handleChange, values}) => {
         return (
-          <>
-            <TextInput
-              keyboardType='numeric'
-              placeholder='Sales Tax (%)'
-              onChangeText={handleChange('gst')}
-              value={values.gst}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='Desired Margin (%)'
-              onChangeText={handleChange('margin')}
-              value={values.margin}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='Disty (%)'
-              onChangeText={handleChange('disty')}
-              value={values.disty}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='Rebate (%)'
-              onChangeText={handleChange('rebate')}
-              value={values.rebate}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='FOB ($)'
-              onChangeText={handleChange('fobPrice')}
-              value={values.fobPrice}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='FX'
-              onChangeText={handleChange('forexRate')}
-              value={values.forexRate}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='Freight'
-              onChangeText={handleChange('freight')}
-              value={values.freight}
-            />
-            <TextInput
-              keyboardType='numeric'
-              placeholder='RRP'
-              onChangeText={handleChange('rrp')}
-              value={values.rrp}
-            />
-            <Text>GP $:</Text>
-            <Text>GP %:</Text>
-            <MyButton handleSubmit={handleSubmit} />
-          </>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} enabled style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>
+              <ScrollView contentContainerStyle={styles.inner}>
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='Sales Tax (%)'
+                  onChangeText={handleChange('gst')}
+                  value={values.gst}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='Desired Margin (%)'
+                  onChangeText={handleChange('margin')}
+                  value={values.margin}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='Disty (%)'
+                  onChangeText={handleChange('disty')}
+                  value={values.disty}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='Rebate (%)'
+                  onChangeText={handleChange('rebate')}
+                  value={values.rebate}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='FOB ($)'
+                  onChangeText={handleChange('fobPrice')}
+                  value={values.fobPrice}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='FX'
+                  onChangeText={handleChange('forexRate')}
+                  value={values.forexRate}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='Freight'
+                  onChangeText={handleChange('freight')}
+                  value={values.freight}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='RRP'
+                  onChangeText={handleChange('rrp')}
+                  value={values.rrp}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='RRP'
+                  onChangeText={handleChange('rrp')}
+                  value={values.rrp}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='RRP'
+                  onChangeText={handleChange('rrp')}
+                  value={values.rrp}
+                />
+                <TextInput
+                  keyboardType='numeric'
+                  placeholder='RRP'
+                  onChangeText={handleChange('rrp')}
+                  value={values.rrp}
+                />
+                <Text>GP $:</Text>
+                <Text>GP %:</Text>
+                <MyButton handleSubmit={handleSubmit} />
+              </ScrollView>
+            </SafeAreaView>
+         </KeyboardAvoidingView>
         )
       }}
     </Formik>
   )
 }
+
+const styles = StyleSheet.create({
+  inner: {
+    padding: 25,
+    justifyContent: 'flex-end'
+  }
+})
 
 export default Calculator
