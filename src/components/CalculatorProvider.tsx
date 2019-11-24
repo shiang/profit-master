@@ -75,6 +75,7 @@ export const CalculatorContext = React.createContext<{
 
 const CalculatorProvider: React.FC<Props> = ({ children }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState)
+
   return (
     <CalculatorContext.Provider value={{ state, dispatch }}>
       {children}

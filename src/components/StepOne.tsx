@@ -1,10 +1,21 @@
 import React, { useContext, useState } from 'react'
 import { CalculatorContext } from './CalculatorProvider'
-import { TextInput, Button, Text, withTheme } from 'react-native-paper'
+import { TextInput, Text, withTheme, Button } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { globalStyles } from '../styles'
 import Container from './Container'
+import useForm from 'react-hook-form'
+
+interface FormData {
+  rrp: string
+  gst: string
+}
+
+enum FieldName {
+  rrp = 'rrp',
+  gst = 'gst'
+}
 
 interface Props {
   navigation: NavigationStackProp<{}>
@@ -15,47 +26,75 @@ interface NavOptions {
   navigationOptions: NavigationStackOptions
 }
 
+const validationOptions = {
+  required: 'This field is required',
+  pattern: {
+    value: /^(\d*\.)?\d+$/,
+    message: 'Please enter a decimal value'
+  }
+}
+
 const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch } = useContext(CalculatorContext)
+  const { register, setValue, handleSubmit, errors } = useForm<FormData>()
 
-  const [ rrp, setRrp ] = useState<string>('')
-  const [ gst, setGst ] = useState<string>('')
-  const isDisabled = rrp.length === 0 || gst.length === 0
+  const hasErrors = (fieldName: string) => {
+    return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
+  }
+  const onSubmit = (data: FormData) => {
+    const { rrp, gst } = data
+    dispatch({
+      type: 'STEP_1',
+      payload: {
+        rrp,
+        gst
+      }
+    })
+    navigation.navigate('StepTwo')
+  }
   return (
     <Container {...{theme}}>
         <Text style={globalStyles.pageHeaderText}>
           Please let us know
         </Text>
         <TextInput
+          //@ts-ignore
+          ref={register({
+            name: FieldName.rrp
+          }, validationOptions)}
           label='What is the desired retail price'
           keyboardType='numeric'
+          contextMenuHidden
           style={globalStyles.textInput}
-          placeholder='enter a price in your local currency'
-          onChangeText={(text) => setRrp(text)}
-          value={rrp}
+          placeholder={hasErrors(FieldName.rrp) ? '' : 'enter a price in your local currency'}
+          onChangeText={(text) => setValue(FieldName.rrp, text)}
+          error={hasErrors(FieldName.rrp)}
         />
+        {errors && errors.rrp && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.rrp.message}</Text>
+        )}
         <TextInput
+          // @ts-ignore
+          ref={register({
+            name: FieldName.gst
+          }, validationOptions)}
           label='What is the local sales tax?'
           keyboardType='numeric'
+          contextMenuHidden
           style={globalStyles.textInput}
-          placeholder='enter a value in percentage'
-          onChangeText={(text) => setGst(text)}
-          value={gst}
+          placeholder={hasErrors(FieldName.gst) ? '' : 'enter a value in percentage'}
+          onChangeText={(text) => setValue(FieldName.gst, text)}
+          error={hasErrors(FieldName.gst)}
         />
+        {errors && errors.gst && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gst.message}</Text>
+        )}
         <Button
+        title='test'
         mode='contained'
-        disabled={isDisabled}
-        style={{ marginTop: 5, backgroundColor: isDisabled ? '#848E9B' : theme.colors.primary }}
-        onPress={() => {
-          dispatch({
-            type: 'STEP_1',
-            payload: {
-              rrp,
-              gst
-            }
-          })
-          navigation.navigate('StepTwo')
-        }}>
+        style={{ marginTop: 5, backgroundColor: theme.colors.primary }}
+        // @ts-ignore
+        onPress={handleSubmit(onSubmit)}>
           Next
         </Button>
       </Container>
