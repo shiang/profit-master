@@ -38,7 +38,7 @@ const validationOptions = {
 
 const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch } = useContext(CalculatorContext)
-  const { register, setValue, handleSubmit, errors } = useForm<FormData>()
+  const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
 
 
   const hasErrors = (fieldName: string) => {
@@ -73,6 +73,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.margin, text)}
         error={hasErrors(FieldName.margin)}
+        onFocus={() => clearError(FieldName.margin)}
       />
       {errors && errors.margin && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.margin.message}</Text>
@@ -89,6 +90,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.disty, text)}
         error={hasErrors(FieldName.disty)}
+        onFocus={() => clearError(FieldName.disty)}
       />
       {errors && errors.disty && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.disty.message}</Text>
@@ -105,6 +107,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.rebate, text)}
         error={hasErrors(FieldName.rebate)}
+        onFocus={() => clearError(FieldName.rebate)}
       />
       {errors && errors.rebate && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.rebate.message}</Text>

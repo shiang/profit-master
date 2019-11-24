@@ -39,7 +39,7 @@ const validationOptions = {
 
 const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch } = useContext(CalculatorContext)
-  const { register, setValue, handleSubmit, errors } = useForm<FormData>()
+  const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
 
   const hasErrors = (fieldName: string) => {
     return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
@@ -73,6 +73,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.fobPrice, text)}
         error={hasErrors(FieldName.fobPrice)}
+        onFocus={() => clearError(FieldName.fobPrice)}
       />
       {errors && errors.fobPrice && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.fobPrice.message}</Text>
@@ -89,6 +90,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.forexRate, text)}
         error={hasErrors(FieldName.forexRate)}
+        onFocus={() => clearError(FieldName.forexRate)}
       />
       {errors && errors.forexRate && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.forexRate.message}</Text>
@@ -105,6 +107,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         style={globalStyles.textInput}
         onChangeText={(text) => setValue(FieldName.freight, text)}
         error={hasErrors(FieldName.freight)}
+        onFocus={() => clearError(FieldName.freight)}
       />
       {errors && errors.freight && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.freight.message}</Text>

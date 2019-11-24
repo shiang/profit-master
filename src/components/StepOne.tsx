@@ -36,7 +36,7 @@ const validationOptions = {
 
 const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch } = useContext(CalculatorContext)
-  const { register, setValue, handleSubmit, errors } = useForm<FormData>()
+  const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
 
   const hasErrors = (fieldName: string) => {
     return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
@@ -69,6 +69,7 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           placeholder={hasErrors(FieldName.rrp) ? '' : 'enter a price in your local currency'}
           onChangeText={(text) => setValue(FieldName.rrp, text)}
           error={hasErrors(FieldName.rrp)}
+          onFocus={() => clearError(FieldName.rrp)}
         />
         {errors && errors.rrp && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.rrp.message}</Text>
@@ -85,6 +86,7 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           placeholder={hasErrors(FieldName.gst) ? '' : 'enter a value in percentage'}
           onChangeText={(text) => setValue(FieldName.gst, text)}
           error={hasErrors(FieldName.gst)}
+          onFocus={() => clearError(FieldName.gst)}
         />
         {errors && errors.gst && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gst.message}</Text>
