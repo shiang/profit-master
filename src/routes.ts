@@ -1,6 +1,5 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import Home from './components/Home'
-// import Calculator from './components/Calculator'
 import StepOne from './components/StepOne'
 import StepTwo from './components/StepTwo'
 import FinalStep from './components/FinalStep'
@@ -15,6 +14,16 @@ export const RootStack = createStackNavigator(
     Result
   },
   {
-    initialRouteName: 'Home'
+    initialRouteName: 'Home',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#000'
+      },
+      headerTintColor: '#30CC9A',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 25
+      }
+    }
   }
 )

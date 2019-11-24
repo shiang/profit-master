@@ -9,8 +9,12 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'tomato',
-    accent: 'yellow'
+    roundness: 2,
+    primary: '#30CC9A',
+    text: '#30CC9A',
+    accent: '#F1563B',
+    placeholder: '#fff',
+    background: '#000'
   }
 }
 

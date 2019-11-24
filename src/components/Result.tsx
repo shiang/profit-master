@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import { CalculatorContext } from './CalculatorProvider'
 import { Button } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
+import { NavigationActions } from 'react-navigation'
 
 interface Props {
   navigation: NavigationStackProp<{}>
@@ -34,7 +35,7 @@ const Result: React.FC<Props> & NavOptions = ({ navigation }) => {
         await dispatch({
           type: 'RESET'
         })
-        navigation.push('StepOne')
+        navigation.reset([NavigationActions.navigate({ routeName: 'StepOne' })], 0)
       }}>
         Start Over
       </Button>
