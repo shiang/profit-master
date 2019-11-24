@@ -37,7 +37,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           value={fobPrice}
         />
         <TextInput
-          label='What is the currency rate against the USD?'
+          label='Local currency rate'
           keyboardType='numeric'
           placeholder='enter 1 if you are trading in USD'
           style={globalStyles.textInput}
@@ -45,7 +45,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           value={forexRate}
         />
         <TextInput
-          label='What is the freight cost in percentage?'
+          label='Freight cost percentage?'
           keyboardType='numeric'
           placeholder='Normally between 3 ~ 5%'
           style={globalStyles.textInput}

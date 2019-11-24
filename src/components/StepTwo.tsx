@@ -28,9 +28,9 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <View style={{ padding: 25 }}>
-        <Text style={globalStyles.pageHeaderText}>Please help us understand your distribution channels:</Text>
+        <Text style={globalStyles.pageHeaderText}>Please help us understand your distribution strategy:</Text>
         <TextInput
-          label='Profit margin your retailer is asking for?'
+          label='Retailer Profit Margin'
           keyboardType='numeric'
           placeholder='enter a value in percentage'
           style={globalStyles.textInput}
@@ -38,7 +38,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           value={margin}
         />
         <TextInput
-          label='Profit margin your distributor is asking for?'
+          label='Distributor Profit Margin'
           keyboardType='numeric'
           placeholder='enter a value in percentage'
           style={globalStyles.textInput}
@@ -46,7 +46,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           value={disty}
         />
         <TextInput
-          label='Rebate percentage you are giving out?'
+          label='Rebate percentage'
           keyboardType='numeric'
           placeholder='enter a value in percentage'
           style={globalStyles.textInput}

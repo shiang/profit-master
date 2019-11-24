@@ -1,10 +1,15 @@
-import React from 'react'
-import { View, Button } from 'react-native'
+import React, { useContext } from 'react'
+import { View, Text } from 'react-native'
+import { Button } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
 import {
   AdMobBanner,
 } from 'expo-ads-admob';
-import { Theme, withTheme } from 'react-native-paper';
+import { Theme, withTheme, TextInput } from 'react-native-paper';
+import { AuthContext } from './AuthProvider';
+import AuthScreen from './AuthScreen';
+import * as firebase from 'firebase'
+import { NavigationActions } from 'react-navigation';
 
 interface Props {
   navigation: NavigationStackProp<{}>
@@ -16,22 +21,19 @@ interface NavOptions {
 }
 
 const Home: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: theme.colors.background }}>
-      <Button
-          title="Go to Calculator"
+
+  const { isLoggedIn } = useContext(AuthContext)
+
+  return isLoggedIn ? (
+    <View>
+       <Button
+          mode='contained'
+          style={{ marginTop: 5 }}
           onPress={() => navigation.navigate('StepOne')}
-        />
-     <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20 }}>
-      <AdMobBanner
-        bannerSize="banner"
-        adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-        testDeviceID="EMULATOR"
-        servePersonalizedAds // true or false
-        onDidFailToReceiveAdWithError={() => console.log('load ad fail')}
-       />
-      </View>
+      >Let's start!</Button>
     </View>
+  ) : (
+    <AuthScreen {...{ navigation, theme }} />
   )
 }
 
