@@ -3,7 +3,7 @@ import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-st
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { AuthContext } from './AuthProvider'
 import { View } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Button, Avatar } from 'react-native-paper'
 import AuthScreen from './AuthScreen'
 import * as firebase from 'firebase'
 import { NavigationActions } from 'react-navigation'
@@ -18,9 +18,11 @@ interface NavOptions {
 }
 
 const AccountScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
-  const { isLoggedIn } = useContext(AuthContext)
+  const { isLoggedIn, user } = useContext(AuthContext)
+  console.log({ user })
   return isLoggedIn ? (
     <View style={{ flex: 1, alignItems: 'center' }}>
+      <Avatar.Image size={64} source={require('../../assets/avatar.png')} />
       <Button onPress={async () => {
        try {
         await firebase.auth().signOut()
