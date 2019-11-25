@@ -92,7 +92,6 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gst.message}</Text>
         )}
         <Button
-        title='test'
         mode='contained'
         style={{ marginTop: 5, backgroundColor: theme.colors.primary }}
         // @ts-ignore

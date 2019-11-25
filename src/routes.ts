@@ -5,6 +5,7 @@ import StepTwo from './components/StepTwo'
 import FinalStep from './components/FinalStep'
 import Result from './components/Result'
 import AccountScreen from './components/AccountScreen';
+import SavedCalculations from './components/SavedCalculations';
 
 export const RootStack = createStackNavigator(
   {
@@ -31,10 +32,11 @@ export const RootStack = createStackNavigator(
 
 export const AccountStack = createStackNavigator(
   {
-    Home: AccountScreen
+    Account: AccountScreen,
+    SavedCalc: SavedCalculations
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Account',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#000'

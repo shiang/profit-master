@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Button, HelperText } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
 import {
   AdMobBanner,
@@ -9,8 +9,12 @@ import { Theme, withTheme, TextInput } from 'react-native-paper';
 import { globalStyles } from '../styles';
 import * as firebase from 'firebase'
 
+interface NavigationParams {
+  key: string
+  routeName: string
+}
 interface Props {
-  navigation: NavigationStackProp<{}>
+  navigation: NavigationStackProp<NavigationParams>
   theme: Theme
 }
 
@@ -23,6 +27,7 @@ const AuthScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const [ email, setEmail ] = useState<string>('')
   const [ password, setPassword ] = useState<string>('')
   const [ isRegistered, setIsRegistered ] = useState<boolean>(false)
+  const [ errorMessage, setErrorMessage ] = useState<string | null>(null)
 
   const isDisabled = email.length === 0 || password.length === 0
 
@@ -30,7 +35,7 @@ const AuthScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password)
     } catch (err) {
-      console.error(err.message)
+      setErrorMessage(err.message)
     }
   }
 
@@ -38,7 +43,7 @@ const AuthScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password)
     } catch (err) {
-      console.log(err.message)
+      setErrorMessage(err.message)
     }
   }
 
@@ -66,17 +71,27 @@ const AuthScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         disabled={isDisabled}
         onPress={isRegistered ? login : signUp}
       >{ isRegistered ? 'Log in': 'Register' }</Button>
+      {errorMessage && (
+        <View style={{ alignItems: 'center' }}>
+          <HelperText
+            type='error'
+            visible={errorMessage}
+          >
+            {errorMessage}
+          </HelperText>
+        </View>
+      )}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: 'white' }}>{isRegistered ? 'No account yet?' : 'Already registered?'}</Text>
         <Button
           onPress={() => {setIsRegistered(!isRegistered)}}>{isRegistered ? 'Register' : 'Log in'}
         </Button>
       </View>
-      <Button
+      {navigation.state.routeName === 'Home' && <Button
           mode='contained'
           style={{ marginTop: 5 }}
           onPress={() => navigation.navigate('StepOne')}
-      >Use without an account</Button>
+      >Use without an account</Button>}
       </View>
      <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 30 }}>
       <AdMobBanner

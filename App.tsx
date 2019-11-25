@@ -23,6 +23,8 @@ const firebaseConfig = {
 }
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
+// export const usersDbRef = firebase.database().ref('users')
+// export const userRef = (uid: string) => usersDbRef.child(uid)
 
 
 const theme = {
