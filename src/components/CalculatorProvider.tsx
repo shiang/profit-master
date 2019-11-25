@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react'
 
-interface CalculatorState {
+export interface CalculatorState {
   gst: string
   margin: string
   disty: string

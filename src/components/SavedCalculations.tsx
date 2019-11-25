@@ -5,8 +5,9 @@ import Container from './Container'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { AuthContext } from './AuthProvider'
 import * as firebase from 'firebase'
-import { withTheme } from 'react-native-paper'
+import { withTheme, Card, Subheading, DataTable, Title, Headline, Divider, List } from 'react-native-paper'
 import _ from 'underscore'
+import { CalculatorState } from './CalculatorProvider'
 
 interface Props {
   navigation: NavigationStackProp<{}>
@@ -17,7 +18,7 @@ interface NavOptions {
   navigationOptions: NavigationStackOptions
 }
 
-interface CalcHistoryData {
+interface CalcHistoryData extends CalculatorState {
   id: string
   name: string
   gpInDollar: string
@@ -27,6 +28,8 @@ interface CalcHistoryData {
 const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
   const { isLoggedIn, user } = useContext(AuthContext)
   const [ data, setData ] = useState<CalcHistoryData[] | null>(null)
+  const [ expanded, setExpanded ] = useState<boolean>(false)
+
   useEffect(() => {
     const getCalcData = () => {
       if (user) {
@@ -59,11 +62,77 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           return (
-            <View style={styles.listItem}>
-              <Text style={{ color: 'white' }}>{item.name}</Text>
-              <Text style={{ color: 'white' }}>You are making ${item.gpInDollar}</Text>
-              <Text style={{ color: 'white' }}>The gross profit percentage is %{item.gpInPercentage}</Text>
-            </View>
+            <Card style={{ marginVertical: 8 }}>
+              <Card.Title title={item.name} />
+              <Divider style={{ marginBottom: 8 }} />
+              <Card.Content>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold' }}>Gross Profit $</Text>
+                    <Subheading>${item.gpInDollar}</Subheading>
+                  </View>
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold' }}>Gross Profit %</Text>
+                    <Subheading>{item.gpInPercentage}</Subheading>
+                  </View>
+                </View>
+
+                <List.Accordion title="Details">
+                  <DataTable>
+                    <DataTable.Header>
+                      <DataTable.Title>Category</DataTable.Title>
+                      <DataTable.Title>Value</DataTable.Title>
+                    </DataTable.Header>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Retail Price</DataTable.Cell>
+                      <DataTable.Cell>${item.rrp}</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Sales Tax</DataTable.Cell>
+                      <DataTable.Cell>{item.gst}%</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Dist'y Margin</DataTable.Cell>
+                      <DataTable.Cell>{item.disty}%</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Retailer Margin</DataTable.Cell>
+                      <DataTable.Cell>{item.margin}%</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Rebate</DataTable.Cell>
+                      <DataTable.Cell>{item.rebate}%</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>FOB Price</DataTable.Cell>
+                      <DataTable.Cell>${item.fobPrice}</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>FX Rate</DataTable.Cell>
+                      <DataTable.Cell>{item.forexRate}</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Freight</DataTable.Cell>
+                      <DataTable.Cell>{item.freight}%</DataTable.Cell>
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      <DataTable.Cell>Landed Cost</DataTable.Cell>
+                      <DataTable.Cell>${item.landedCost}</DataTable.Cell>
+                    </DataTable.Row>
+
+                  </DataTable>
+                </List.Accordion>
+              </Card.Content>
+            </Card>
           )
         }}
       />
@@ -72,13 +141,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
 }
 
 SavedCalculations.navigationOptions = {
-  title: 'Saved Calculations'
+  title: 'Histories'
 }
-
-const styles = StyleSheet.create({
-  listItem: {
-    marginVertical: 8
-  }
-})
 
 export default withTheme(SavedCalculations)

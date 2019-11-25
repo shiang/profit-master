@@ -28,8 +28,8 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false)
   const [ resultName, setResultName ] = useState<string>('')
 
+  const { gst, margin, disty, rebate, rrp, landedCost, fobPrice, forexRate, freight } = state
   useEffect(() => {
-    const { gst, margin, disty, rebate, rrp, landedCost } = state
     const gpInDollar = ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - ((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) - Number(landedCost)
     const gpInPercentage = (((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - (((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) + Number(landedCost))) / ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100)))
     setGpInDollar(gpInDollar.toFixed(2))
@@ -51,7 +51,16 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     calcHistoriesRef.push().set({
       name: resultName,
       gpInDollar,
-      gpInPercentage
+      gpInPercentage,
+      gst,
+      margin,
+      disty,
+      rebate,
+      rrp,
+      landedCost,
+      fobPrice,
+      forexRate,
+      freight
     })
   }
 

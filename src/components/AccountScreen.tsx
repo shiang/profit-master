@@ -30,9 +30,9 @@ const AccountScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     <View style={{ flex: 1, alignItems: 'center', padding: 40 }}>
       <Avatar.Image size={64} source={require('../../assets/avatar.png')} />
       <Text>{user.email}</Text>
-      <Button onPress={() => {
+      <Button style={{ marginVertical: 8 }} onPress={() => {
         navigation.navigate({ routeName: 'SavedCalc' })
-      }}>View Data</Button>
+      }}>View Saved Calculations</Button>
       <Button onPress={async () => {
        try {
         await firebase.auth().signOut()

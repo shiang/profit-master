@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React from 'react'
 import { KeyboardAvoidingView, Platform, SafeAreaView, View } from 'react-native'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { AdMobBanner } from 'expo-ads-admob'
