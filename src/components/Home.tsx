@@ -1,18 +1,19 @@
 import React, { useContext } from 'react'
-import { View, Text } from 'react-native'
 import { Button } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
-import {
-  AdMobBanner,
-} from 'expo-ads-admob';
-import { Theme, withTheme, TextInput } from 'react-native-paper';
+import { Theme, withTheme } from 'react-native-paper';
 import { AuthContext } from './AuthProvider';
 import AuthScreen from './AuthScreen';
-import * as firebase from 'firebase'
-import { NavigationActions } from 'react-navigation';
+import Container from './Container';
+import { CalculatorContext } from './CalculatorProvider';
 
+
+interface NavigationParams {
+  key: string
+  routeName: string
+}
 interface Props {
-  navigation: NavigationStackProp<{}>
+  navigation: NavigationStackProp<NavigationParams>
   theme: Theme
 }
 
@@ -23,15 +24,29 @@ interface NavOptions {
 const Home: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 
   const { isLoggedIn } = useContext(AuthContext)
+  const { dispatch } = useContext(CalculatorContext)
 
   return isLoggedIn ? (
-    <View>
+    <Container {...{theme}}>
        <Button
           mode='contained'
-          style={{ marginTop: 5 }}
+          style={{ marginTop: 25 }}
           onPress={() => navigation.navigate('StepOne')}
-      >Let's start!</Button>
-    </View>
+      >Calculate Gross Profit</Button>
+      <Button
+          mode='contained'
+          style={{ marginTop: 25 }}
+          onPress={() => {
+            navigation.navigate('StepOne')
+            dispatch({
+              type: 'IS_CALC_FOB',
+              payload: {
+                isCalculateFob: true
+              }
+            })
+          }}
+      >Calculate FOB Price</Button>
+    </Container>
   ) : (
     <AuthScreen {...{ navigation, theme }} />
   )

@@ -12,12 +12,14 @@ interface FormData {
   fobPrice: string
   forexRate: string
   freight: string
+  gpInPercentage: string
 }
 
 enum FieldName {
   fobPrice = 'fobPrice',
   forexRate = 'forexRate',
-  freight = 'freight'
+  freight = 'freight',
+  gpInPercentage = 'gpInPercentage'
 }
 
 interface Props {
@@ -38,30 +40,52 @@ const validationOptions = {
 }
 
 const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
-  const { dispatch } = useContext(CalculatorContext)
+  const { dispatch, state } = useContext(CalculatorContext)
   const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
 
   const hasErrors = (fieldName: string) => {
     return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
   }
   const onSubmit = (data: FormData) => {
-    const { fobPrice, forexRate, freight } = data
-    dispatch({
-      type: 'FINAL_STEP',
-      payload: {
-        fobPrice,
-        forexRate,
-        freight,
-        landedCost: (Number(fobPrice) / Number(forexRate) * (1 + Number(freight) / 100)).toFixed(2)
-      }
-    })
-    navigation.navigate('Result')
+    if (!state.isCalculateFob) {
+      const { fobPrice, forexRate, freight } = data
+      dispatch({
+        type: 'FINAL_STEP',
+        payload: {
+          fobPrice,
+          forexRate,
+          freight,
+          landedCost: (Number(fobPrice) / Number(forexRate) * (1 + Number(freight) / 100)).toFixed(2)
+        }
+      })
+      navigation.navigate('Result')
+    } else {
+      const { gpInPercentage, forexRate, freight } = data
+      const { rrp, margin, gst, disty, rebate } = state
+      const priceAfterDisty = ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100)))
+      const gpInDollar = priceAfterDisty * (Number(gpInPercentage) / 100)
+      const landedCost = ((priceAfterDisty - gpInDollar) - ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)))
+      const fobPrice = landedCost / (1 + (Number(freight) / 100)) * Number(forexRate)
+
+      dispatch({
+        type: 'FOB_FINAL_STEP',
+        payload: {
+          gpInPercentage,
+          forexRate,
+          freight,
+          fobPrice: fobPrice.toFixed(2),
+          gpInDollar: gpInDollar.toFixed(2),
+          landedCost: landedCost.toFixed(2)
+        }
+      })
+      navigation.navigate('Result')
+    }
   }
 
   return (
     <Container {...{theme}}>
       <Text style={globalStyles.pageHeaderText}>Please help us understand your pricing structure:</Text>
-      <TextInput
+      {!state.isCalculateFob && <TextInput
         //@ts-ignore
         ref={register({
           name: FieldName.fobPrice
@@ -74,10 +98,28 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         onChangeText={(text) => setValue(FieldName.fobPrice, text)}
         error={hasErrors(FieldName.fobPrice)}
         onFocus={() => clearError(FieldName.fobPrice)}
-      />
-      {errors && errors.fobPrice && (
+      />}
+      {errors && errors.fobPrice && !state.isCalculateFob && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.fobPrice.message}</Text>
         )}
+
+      {state.isCalculateFob && <TextInput
+        //@ts-ignore
+        ref={register({
+          name: FieldName.gpInPercentage
+        }, validationOptions)}
+        label='Desired gross profit in %'
+        keyboardType='numeric'
+        contextMenuHidden
+        placeholder={hasErrors(FieldName.gpInPercentage) ? '' : 'enter a value in %'}
+        style={globalStyles.textInput}
+        onChangeText={(text) => setValue(FieldName.gpInPercentage, text)}
+        error={hasErrors(FieldName.gpInPercentage)}
+        onFocus={() => clearError(FieldName.gpInPercentage)}
+      />}
+      {errors && errors.gpInPercentage && state.isCalculateFob && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gpInPercentage.message}</Text>
+      )}
       <TextInput
         //@ts-ignore
         ref={register({

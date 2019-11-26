@@ -30,10 +30,16 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 
   const { gst, margin, disty, rebate, rrp, landedCost, fobPrice, forexRate, freight } = state
   useEffect(() => {
-    const gpInDollar = ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - ((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) - Number(landedCost)
-    const gpInPercentage = (((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - (((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) + Number(landedCost))) / ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100)))
-    setGpInDollar(gpInDollar.toFixed(2))
-    setGpInPercentage(`${(gpInPercentage * 100).toFixed(2)}%`)
+    if (!state.isCalculateFob) {
+      const gpInDollar = ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - ((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) - Number(landedCost)
+      const gpInPercentage = (((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - (((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) + Number(landedCost))) / ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100)))
+      setGpInDollar(gpInDollar.toFixed(2))
+      setGpInPercentage(`${(gpInPercentage * 100).toFixed(2)}%`)
+    } else {
+      const { gpInPercentage, gpInDollar } = state
+      setGpInPercentage(`${(Number(gpInPercentage)).toFixed(2)}%`)
+      setGpInDollar(`${(Number(gpInDollar)).toFixed(2)}%`)
+    }
   })
 
   const showModal = () => {
@@ -67,8 +73,9 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   return (
     <Provider>
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      {gpInDollar && <Text>You are making ${gpInDollar}</Text>}
-      {gpInPercentage && <Text>The gross profit percentage is {gpInPercentage}</Text>}
+      {gpInDollar && !state.isCalculateFob && <Text>You are making ${gpInDollar}</Text>}
+      {gpInPercentage && !state.isCalculateFob && <Text>The gross profit percentage is {gpInPercentage}</Text>}
+      {state.fobPrice && state.fobPrice.length > 0 && state.isCalculateFob && <Text>The FOB Price needs to be $USD {state.fobPrice}</Text>}
       <Button onPress={() => {
         if (user) {
           showModal()

@@ -62,7 +62,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           return (
-            <Card style={{ marginVertical: 8 }}>
+            <Card style={{ marginVertical: 8 }} elevation={3}>
               <Card.Title title={item.name} />
               <Divider style={{ marginBottom: 8 }} />
               <Card.Content>

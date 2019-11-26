@@ -10,12 +10,17 @@ export interface CalculatorState {
   freight: string
   rrp: string
   landedCost: string
+  isCalculateFob: boolean
+  gpInPercentage: string
+  gpInDollar: string
 }
 
 type Action =
+  | { type: 'IS_CALC_FOB', payload: { isCalculateFob: boolean } }
   | { type: 'STEP_1', payload: { rrp: string, gst: string } }
   | { type: 'STEP_2', payload: { margin: string, disty: string, rebate: string } }
   | { type: 'FINAL_STEP', payload: { fobPrice: string, forexRate: string, freight: string, landedCost: string } }
+  | { type: 'FOB_FINAL_STEP', payload: { gpInPercentage: string, gpInDollar: string, fobPrice: string, forexRate: string, freight: string, landedCost: string } }
   | { type: 'RESET' }
 
 
@@ -32,11 +37,19 @@ const initialState: CalculatorState = {
   forexRate: '',
   freight: '',
   rrp: '',
-  landedCost: ''
+  landedCost: '',
+  isCalculateFob: false,
+  gpInPercentage: '',
+  gpInDollar: ''
 }
 
 const reducer = (state: CalculatorState, action: Action) => {
   switch (action.type) {
+    case 'IS_CALC_FOB':
+      return {
+        ...state,
+        isCalculateFob: action.payload.isCalculateFob
+      }
     case 'STEP_1':
       return {
         ...state,
@@ -53,6 +66,16 @@ const reducer = (state: CalculatorState, action: Action) => {
     case 'FINAL_STEP':
       return {
         ...state,
+        fobPrice: action.payload.fobPrice,
+        forexRate: action.payload.forexRate,
+        freight: action.payload.freight,
+        landedCost: action.payload.landedCost
+      }
+    case 'FOB_FINAL_STEP':
+      return {
+        ...state,
+        gpInPercentage: action.payload.gpInPercentage,
+        gpInDollar: action.payload.gpInDollar,
         fobPrice: action.payload.fobPrice,
         forexRate: action.payload.forexRate,
         freight: action.payload.freight,
