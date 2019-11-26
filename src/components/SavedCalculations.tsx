@@ -1,11 +1,24 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
-import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
+import {
+  NavigationStackProp,
+  NavigationStackOptions
+} from 'react-navigation-stack'
 import Container from './Container'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { AuthContext } from './AuthProvider'
 import * as firebase from 'firebase'
-import { withTheme, Card, Subheading, DataTable, Title, Headline, Divider, List } from 'react-native-paper'
+import {
+  withTheme,
+  Card,
+  Subheading,
+  DataTable,
+  Title,
+  Headline,
+  Divider,
+  List,
+  ActivityIndicator
+} from 'react-native-paper'
 import _ from 'underscore'
 import { CalculatorState } from './CalculatorProvider'
 
@@ -27,8 +40,8 @@ interface CalcHistoryData extends CalculatorState {
 
 const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
   const { isLoggedIn, user } = useContext(AuthContext)
-  const [ data, setData ] = useState<CalcHistoryData[] | null>(null)
-  const [ expanded, setExpanded ] = useState<boolean>(false)
+  const [data, setData] = useState<CalcHistoryData[] | null>(null)
+  const [expanded, setExpanded] = useState<boolean>(false)
 
   useEffect(() => {
     const getCalcData = () => {
@@ -47,16 +60,23 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
               }
             })
             return data
-          } )
+          })
       }
     }
     getCalcData().then(histories => {
       setData(Object.values(histories))
-
     })
   }, [])
-  return data && (
-    <Container {...{theme}}>
+
+  if (!data) {
+    return (
+      <Container {...{ theme }}>
+        <ActivityIndicator animating color={theme.colors.primary} />
+      </Container>
+    )
+  }
+  return (
+    <Container {...{ theme }}>
       <FlatList
         data={data}
         keyExtractor={item => item.id}
@@ -66,7 +86,13 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
               <Card.Title title={item.name} />
               <Divider style={{ marginBottom: 8 }} />
               <Card.Content>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly'
+                  }}
+                >
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontWeight: 'bold' }}>Gross Profit $</Text>
                     <Subheading>${item.gpInDollar}</Subheading>
@@ -77,7 +103,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
                   </View>
                 </View>
 
-                <List.Accordion title="Details">
+                <List.Accordion title='Details'>
                   <DataTable>
                     <DataTable.Header>
                       <DataTable.Title>Category</DataTable.Title>
@@ -128,7 +154,6 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
                       <DataTable.Cell>Landed Cost</DataTable.Cell>
                       <DataTable.Cell>${item.landedCost}</DataTable.Cell>
                     </DataTable.Row>
-
                   </DataTable>
                 </List.Accordion>
               </Card.Content>

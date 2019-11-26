@@ -1,14 +1,16 @@
-import React from 'react';
-import { StyleSheet, Text, AppRegistry } from 'react-native';
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
-import { createAppContainer } from 'react-navigation';
-import { RootStack, AccountStack } from './src/routes';
-import CalculatorProvider from './src/components/CalculatorProvider';
+import './src/fixtimerbug'
+
+import React from 'react'
+import { StyleSheet, Text, AppRegistry } from 'react-native'
+import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper'
+import { createAppContainer } from 'react-navigation'
+import { RootStack, AccountStack } from './src/routes'
+import CalculatorProvider from './src/components/CalculatorProvider'
 import * as firebase from 'firebase'
 import getEnvVars from './environment'
-import AuthProvider from './src/components/AuthProvider';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import AuthProvider from './src/components/AuthProvider'
+import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { Ionicons } from '@expo/vector-icons'
 import { Provider as GQLProvider, createClient } from 'urql'
 import { Provider as PortalProvider } from 'react-native-paper'
 
@@ -16,7 +18,15 @@ const client = createClient({
   url: 'https://countries.trevorblades.com/'
 })
 
-const { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId } = getEnvVars()
+const {
+  apiKey,
+  authDomain,
+  databaseURL,
+  projectId,
+  storageBucket,
+  messagingSenderId,
+  appId
+} = getEnvVars()
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey,
@@ -31,7 +41,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 // export const usersDbRef = firebase.database().ref('users')
 // export const userRef = (uid: string) => usersDbRef.child(uid)
-
 
 const theme = {
   ...DefaultTheme,
@@ -57,22 +66,32 @@ const AppContainer = createAppContainer(
         tabBarIcon: ({ focused, horizontal, tintColor }) => {
           const { routeName } = navigation.state
           let iconName
-          if(routeName === 'Home') {
+          if (routeName === 'Home') {
             iconName = 'md-calculator'
           } else if (routeName === 'Account') {
             iconName = 'md-person'
           }
-          return <Ionicons name={iconName} size={32} color={focused ? '#30CC9A' : '#F1563B'} />
+          return (
+            <Ionicons
+              name={iconName}
+              size={32}
+              color={focused ? '#30CC9A' : '#F1563B'}
+            />
+          )
         },
         tabBarLabel: ({ focused }) => {
           const { routeName } = navigation.state
           let label
           if (routeName === 'Home') {
-            return label = focused ? <Text style={{ color: '#30CC9A', fontSize: 12 }}>Home</Text> : null
+            return (label = focused ? (
+              <Text style={{ color: '#30CC9A', fontSize: 12 }}>Home</Text>
+            ) : null)
           }
 
           if (routeName === 'Account') {
-            return label = focused ? <Text style={{ color: '#30CC9A', fontSize: 12 }}>Account</Text> : null
+            return (label = focused ? (
+              <Text style={{ color: '#30CC9A', fontSize: 12 }}>Account</Text>
+            ) : null)
           }
 
           return label
@@ -101,7 +120,7 @@ export default function App() {
         </PaperProvider>
       </GQLProvider>
     </PortalProvider>
-  );
+  )
 }
 
 AppRegistry.registerComponent('App', () => App)
@@ -111,6 +130,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    justifyContent: 'center'
+  }
+})

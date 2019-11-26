@@ -6,7 +6,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "codegen": "graphql-codegen --config graphql-codegen.yml"
+    "codegen": "graphql-codegen --config graphql-codegen.yml",
+    "lint": "eslint ./",
+    "format": "pretty-quick"
   },
   "dependencies": {
     "@graphql-codegen/typescript-urql": "^1.8.3",
@@ -31,6 +33,7 @@
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.10.3",
     "react-navigation-tabs": "^2.6.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.16",
     "underscore": "^1.9.1",
     "urql": "^1.6.3"
   },
@@ -41,7 +44,15 @@
     "@graphql-codegen/typescript-operations": "1.8.3",
     "@types/react": "^16.8.23",
     "@types/react-native": "^0.57.65",
+    "@typescript-eslint/eslint-plugin": "^2.9.0",
+    "@typescript-eslint/parser": "^2.9.0",
+    "babel-eslint": "^10.0.3",
     "babel-preset-expo": "^7.1.0",
+    "eslint": "^6.7.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "typescript": "^3.6.3"
   },
   "private": true
