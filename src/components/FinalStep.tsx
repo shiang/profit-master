@@ -1,11 +1,15 @@
-import React, { useContext } from 'react'
-import { Text } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { Text, Picker, View } from 'react-native'
 import { CalculatorContext } from './CalculatorProvider'
-import { TextInput, Button, Theme, withTheme } from 'react-native-paper'
+import { TextInput, Button, Theme, withTheme, Portal, Dialog, ActivityIndicator, Snackbar } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
 import { globalStyles } from '../styles'
 import Container from './Container'
 import useForm from 'react-hook-form'
+import { useCountriesQuery } from './generated/graphql'
+import FinalStepBanner from './FinalStepBanner'
+import { Button as NativeButton } from 'react-native'
+import axios from 'axios'
 
 
 interface FormData {
@@ -41,7 +45,16 @@ const validationOptions = {
 
 const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch, state } = useContext(CalculatorContext)
-  const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
+  const { register, setValue, handleSubmit, errors, clearError, watch } = useForm<FormData>()
+  const forexRateValue = watch(FieldName.forexRate)
+  const gpInPercentageValue = watch(FieldName.gpInPercentage)
+  const fobPriceValue = watch(FieldName.fobPrice)
+  const freightValue = watch(FieldName.freight)
+
+  const [ country, setCountry ] = useState<string | null>(null)
+  const [ displaySnackbar, setDisplaySnackbar ] = useState<boolean>(false)
+
+  const [ res ] = useCountriesQuery()
 
   const hasErrors = (fieldName: string) => {
     return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
@@ -82,8 +95,46 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     }
   }
 
+  const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false)
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+
+  const hideModal = () => {
+    setIsModalVisible(false)
+  }
+
+  useEffect(() => {
+    register({ name: FieldName.forexRate })
+    register({ name: FieldName.gpInPercentage })
+    register({ name: FieldName.fobPrice })
+    register({ name: FieldName.freight })
+  }, [register])
+
+  const getCurrencyRate = async () => {
+    try {
+    const data = await axios.get(`https://api.exchangeratesapi.io/latest?base=${country}&symbols=USD`)
+    if (data.status === 200) {
+      setValue(FieldName.forexRate, data.data.rates.USD.toFixed(4))
+    }
+  } catch (err) {
+      if (err) {
+        setDisplaySnackbar(true)
+      }
+    }
+  }
+
+  if (res.fetching) {
+    return (
+      <Container {...{theme}}>
+        <ActivityIndicator animating color={theme.colors.primary} />
+      </Container>
+    )
+  }
+
   return (
     <Container {...{theme}}>
+      <FinalStepBanner />
       <Text style={globalStyles.pageHeaderText}>Please help us understand your pricing structure:</Text>
       {!state.isCalculateFob && <TextInput
         //@ts-ignore
@@ -98,6 +149,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         onChangeText={(text) => setValue(FieldName.fobPrice, text)}
         error={hasErrors(FieldName.fobPrice)}
         onFocus={() => clearError(FieldName.fobPrice)}
+        value={fobPriceValue as string}
       />}
       {errors && errors.fobPrice && !state.isCalculateFob && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.fobPrice.message}</Text>
@@ -116,6 +168,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         onChangeText={(text) => setValue(FieldName.gpInPercentage, text)}
         error={hasErrors(FieldName.gpInPercentage)}
         onFocus={() => clearError(FieldName.gpInPercentage)}
+        value={gpInPercentageValue as string}
       />}
       {errors && errors.gpInPercentage && state.isCalculateFob && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gpInPercentage.message}</Text>
@@ -133,10 +186,19 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         onChangeText={(text) => setValue(FieldName.forexRate, text)}
         error={hasErrors(FieldName.forexRate)}
         onFocus={() => clearError(FieldName.forexRate)}
+        value={forexRateValue as string}
       />
       {errors && errors.forexRate && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.forexRate.message}</Text>
-        )}
+      )}
+
+      <NativeButton
+      // style={{ marginVertical: 8, backgroundColor: theme.colors.primary }}
+      title='Or click here to get currency rate'
+      onPress={() => {
+        showModal()
+      }} />
+
       <TextInput
         //@ts-ignore
         ref={register({
@@ -146,11 +208,16 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         keyboardType='numeric'
         contextMenuHidden
         placeholder={hasErrors(FieldName.freight) ? '' : 'Normally between 3 ~ 5%'}
-        style={globalStyles.textInput}
+        style={{
+          ...globalStyles.textInput,
+          marginTop: 5
+        }}
         onChangeText={(text) => setValue(FieldName.freight, text)}
         error={hasErrors(FieldName.freight)}
         onFocus={() => clearError(FieldName.freight)}
+        value={freightValue as string}
       />
+
       {errors && errors.freight && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.freight.message}</Text>
         )}
@@ -161,6 +228,51 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       onPress={handleSubmit(onSubmit)}>
         See Result
       </Button>
+
+      <Portal>
+        <Dialog visible={isModalVisible} onDismiss={hideModal}>
+          <View style={globalStyles.modal}>
+            <Text style={globalStyles.modalTitle}>Select a country</Text>
+            <Picker
+              selectedValue={country}
+              style={{ backgroundColor: 'white' }}
+              onValueChange={(val, idx) => {
+                setCountry(val)
+              }}
+            >
+              {res.data && res.data.countries && res.data.countries.map(country => {
+                return (
+                  <Picker.Item label={`${country.name} ${country.emoji}`} value={country.currency} key={country.code} />
+                )
+              })}
+            </Picker>
+          <Button
+            style={{
+              ...globalStyles.modalConfirmButton,
+              marginTop: 8
+            }}
+            mode='contained'
+            onPress={() => {
+            getCurrencyRate()
+            hideModal()
+          }}>Save</Button>
+          </View>
+        </Dialog>
+      </Portal>
+
+      <Snackbar
+        visible={displaySnackbar}
+        onDismiss={() => setDisplaySnackbar(false)}
+        action={{
+          label: 'OK',
+          onPress: () => {
+            setDisplaySnackbar(false)
+          },
+        }}
+      >
+        This country is not yet supported.
+      </Snackbar>
+
     </Container>
   )
 }

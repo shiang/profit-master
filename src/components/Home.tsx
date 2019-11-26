@@ -31,7 +31,15 @@ const Home: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
        <Button
           mode='contained'
           style={{ marginTop: 25 }}
-          onPress={() => navigation.navigate('StepOne')}
+          onPress={() => {
+            navigation.navigate('StepOne')
+            dispatch({
+              type: 'IS_CALC_FOB',
+              payload: {
+                isCalculateFob: false
+              }
+            })
+          } }
       >Calculate Gross Profit</Button>
       <Button
           mode='contained'

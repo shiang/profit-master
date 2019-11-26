@@ -17,6 +17,19 @@ export const globalStyles = StyleSheet.create({
   textInput: {
     marginBottom: 5,
     backgroundColor: '#181F26'
+  },
+  modal: {
+    padding: 20,
+    backgroundColor: '#000'
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#30CC9A',
+    marginBottom: 8
+  },
+  modalConfirmButton: {
+    backgroundColor: '#30CC9A'
   }
 })
 

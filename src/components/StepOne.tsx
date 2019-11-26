@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { CalculatorContext } from './CalculatorProvider'
 import { TextInput, Text, withTheme, Button } from 'react-native-paper'
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
@@ -36,7 +36,14 @@ const validationOptions = {
 
 const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { dispatch } = useContext(CalculatorContext)
-  const { register, setValue, handleSubmit, errors, clearError } = useForm<FormData>()
+  const { register, setValue, handleSubmit, errors, clearError, watch } = useForm<FormData>()
+  const rrpValue = watch(FieldName.rrp)
+  const gstValue = watch(FieldName.gst)
+
+  useEffect(() => {
+    register({ name: FieldName.rrp })
+    register({ name: FieldName.gst })
+  }, [register])
 
   const hasErrors = (fieldName: string) => {
     return Object.keys(errors).length > 0 && Object.keys(errors).includes(fieldName)
@@ -52,6 +59,7 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     })
     navigation.navigate('StepTwo')
   }
+  const [ rrp, setRrp ] = useState<string>('')
   return (
     <Container {...{theme}}>
         <Text style={globalStyles.pageHeaderText}>
@@ -70,6 +78,7 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           onChangeText={(text) => setValue(FieldName.rrp, text)}
           error={hasErrors(FieldName.rrp)}
           onFocus={() => clearError(FieldName.rrp)}
+          value={rrpValue as string}
         />
         {errors && errors.rrp && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.rrp.message}</Text>
@@ -87,6 +96,7 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           onChangeText={(text) => setValue(FieldName.gst, text)}
           error={hasErrors(FieldName.gst)}
           onFocus={() => clearError(FieldName.gst)}
+          value={gstValue as string}
         />
         {errors && errors.gst && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>{errors.gst.message}</Text>

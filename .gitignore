@@ -10,6 +10,7 @@ npm-debug.*
 web-build/
 web-report/
 environment.js
+graphql.schema.json
 
 # macOS
 .DS_Store

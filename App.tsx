@@ -9,6 +9,12 @@ import getEnvVars from './environment'
 import AuthProvider from './src/components/AuthProvider';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { Provider as GQLProvider, createClient } from 'urql'
+import { Provider as PortalProvider } from 'react-native-paper'
+
+const client = createClient({
+  url: 'https://countries.trevorblades.com/'
+})
 
 const { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId } = getEnvVars()
 // Your web app's Firebase configuration
@@ -73,7 +79,7 @@ const AppContainer = createAppContainer(
         }
       }),
       tabBarOptions: {
-        // showLabel: false,
+        showLabel: false,
         style: {
           backgroundColor: '#000'
         }
@@ -84,13 +90,17 @@ const AppContainer = createAppContainer(
 
 export default function App() {
   return (
-    <PaperProvider theme={theme}>
-      <AuthProvider>
-        <CalculatorProvider>
-          <AppContainer />
-        </CalculatorProvider>
-      </AuthProvider>
-    </PaperProvider>
+    <PortalProvider>
+      <GQLProvider value={client}>
+        <PaperProvider theme={theme}>
+          <AuthProvider>
+            <CalculatorProvider>
+              <AppContainer />
+            </CalculatorProvider>
+          </AuthProvider>
+        </PaperProvider>
+      </GQLProvider>
+    </PortalProvider>
   );
 }
 

@@ -28,7 +28,7 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false)
   const [ resultName, setResultName ] = useState<string>('')
 
-  const { gst, margin, disty, rebate, rrp, landedCost, fobPrice, forexRate, freight } = state
+  const { gst, margin, disty, rebate, rrp, landedCost, fobPrice, forexRate, freight, isCalculateFob } = state
   useEffect(() => {
     if (!state.isCalculateFob) {
       const gpInDollar = ((Number(rrp) / (1 + Number(gst) / 100)) * (1 - (Number(margin) / 100)) * (1 - (Number(disty) / 100))) - ((Number(rrp) / (1 + (Number(gst) / 100))) * (1 - (Number(margin) / 100)) * (Number(rebate) / 100)) - Number(landedCost)
@@ -40,7 +40,7 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       setGpInPercentage(`${(Number(gpInPercentage)).toFixed(2)}%`)
       setGpInDollar(`${(Number(gpInDollar)).toFixed(2)}%`)
     }
-  })
+  }, [])
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -71,55 +71,55 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   }
 
   return (
-    <Provider>
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      {gpInDollar && !state.isCalculateFob && <Text>You are making ${gpInDollar}</Text>}
-      {gpInPercentage && !state.isCalculateFob && <Text>The gross profit percentage is {gpInPercentage}</Text>}
-      {state.fobPrice && state.fobPrice.length > 0 && state.isCalculateFob && <Text>The FOB Price needs to be $USD {state.fobPrice}</Text>}
-      <Button onPress={() => {
-        if (user) {
-          showModal()
-        } else {
-          navigation.navigate({ routeName: 'Account' })
-        }
-      }}>Save result</Button>
-      <Button onPress={async () => {
-        await dispatch({
-          type: 'RESET'
-        })
-        navigation.reset([NavigationActions.navigate({ routeName: 'StepOne' })], 0)
-      }}>
-        Start Over
-      </Button>
-    </View>
-    <Portal>
-    <Dialog visible={isModalVisible} onDismiss={hideModal}>
-      <View style={styles.modal}>
-        <Text style={styles.modalTitle}>Enter a name to save</Text>
-        <TextInput
-        onChangeText={(text) => setResultName(text)}
-        value={resultName}
-        selectionColor='#30CC9A'
-        underlineColor='#30CC9A'
-        style={globalStyles.textInput}
-        theme={{
-          colors: {
-            text: '#30CC9A'
+    <>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {gpInDollar && !isCalculateFob && <Text>You are making ${gpInDollar}</Text>}
+        {gpInPercentage && !isCalculateFob && <Text>The gross profit percentage is {gpInPercentage}</Text>}
+        {fobPrice && fobPrice.length > 0 && isCalculateFob && <Text>The FOB Price needs to be $USD {fobPrice}</Text>}
+        <Button onPress={() => {
+          if (user) {
+            showModal()
+          } else {
+            navigation.navigate({ routeName: 'Account' })
           }
-        }}
-      />
-      <Button
-        style={styles.button}
-        mode='contained'
-        onPress={async () => {
-        await handleSaveResult()
-        setResultName('')
-        hideModal()
-      }}>Save</Button>
+        }}>Save result</Button>
+        <Button onPress={() => {
+          navigation.reset([NavigationActions.navigate({ routeName: 'Home' })], 0)
+          dispatch({
+            type: 'RESET'
+          })
+        }}>
+          Start Over
+        </Button>
       </View>
-    </Dialog>
-    </Portal>
-    </Provider>
+      <Portal>
+        <Dialog visible={isModalVisible} onDismiss={hideModal}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Enter a name to save</Text>
+            <TextInput
+            onChangeText={(text) => setResultName(text)}
+            value={resultName}
+            selectionColor='#30CC9A'
+            underlineColor='#30CC9A'
+            style={globalStyles.textInput}
+            theme={{
+              colors: {
+                text: '#30CC9A'
+              }
+            }}
+          />
+          <Button
+            style={styles.button}
+            mode='contained'
+            onPress={async () => {
+            await handleSaveResult()
+            setResultName('')
+            hideModal()
+          }}>Save</Button>
+          </View>
+        </Dialog>
+      </Portal>
+    </>
   )
 }
 

@@ -1,0 +1,14 @@
+overwrite: true
+schema: "https://countries.trevorblades.com/"
+documents: "src/graphql/operations/**/*.ts"
+generates:
+  src/components/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withHooks: true
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
