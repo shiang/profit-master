@@ -176,195 +176,197 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 
   return (
     <Container {...{ theme }}>
-      <FinalStepBanner />
-      <Text style={globalStyles.pageHeaderText}>
-        Please help us understand your pricing structure:
-      </Text>
-      {!state.isCalculateFob && (
+      <View style={{ flex: 1 }}>
+        <FinalStepBanner />
+        <Text style={globalStyles.pageHeaderText}>
+          Please help us understand your pricing structure:
+        </Text>
+        {!state.isCalculateFob && (
+          <TextInput
+            //@ts-ignore
+            ref={register(
+              {
+                name: FieldName.fobPrice
+              },
+              validationOptions
+            )}
+            label='What is the FOB price?'
+            keyboardType='numeric'
+            contextMenuHidden
+            placeholder={
+              hasErrors(FieldName.fobPrice)
+                ? ''
+                : 'enter a price in your local currency'
+            }
+            style={globalStyles.textInput}
+            onChangeText={text => setValue(FieldName.fobPrice, text)}
+            error={hasErrors(FieldName.fobPrice)}
+            onFocus={() => clearError(FieldName.fobPrice)}
+            value={fobPriceValue as string}
+          />
+        )}
+        {errors && errors.fobPrice && !state.isCalculateFob && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
+            {errors.fobPrice.message}
+          </Text>
+        )}
+
+        {state.isCalculateFob && (
+          <TextInput
+            //@ts-ignore
+            ref={register(
+              {
+                name: FieldName.gpInPercentage
+              },
+              validationOptions
+            )}
+            label='Desired gross profit in %'
+            keyboardType='numeric'
+            contextMenuHidden
+            placeholder={
+              hasErrors(FieldName.gpInPercentage) ? '' : 'enter a value in %'
+            }
+            style={globalStyles.textInput}
+            onChangeText={text => setValue(FieldName.gpInPercentage, text)}
+            error={hasErrors(FieldName.gpInPercentage)}
+            onFocus={() => clearError(FieldName.gpInPercentage)}
+            value={gpInPercentageValue as string}
+          />
+        )}
+        {errors && errors.gpInPercentage && state.isCalculateFob && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
+            {errors.gpInPercentage.message}
+          </Text>
+        )}
         <TextInput
           //@ts-ignore
           ref={register(
             {
-              name: FieldName.fobPrice
+              name: FieldName.forexRate
             },
             validationOptions
           )}
-          label='What is the FOB price?'
+          label='Local currency rate'
           keyboardType='numeric'
           contextMenuHidden
           placeholder={
-            hasErrors(FieldName.fobPrice)
+            hasErrors(FieldName.forexRate)
               ? ''
-              : 'enter a price in your local currency'
+              : 'enter 1 if you are trading in USD'
           }
           style={globalStyles.textInput}
-          onChangeText={text => setValue(FieldName.fobPrice, text)}
-          error={hasErrors(FieldName.fobPrice)}
-          onFocus={() => clearError(FieldName.fobPrice)}
-          value={fobPriceValue as string}
+          onChangeText={text => setValue(FieldName.forexRate, text)}
+          error={hasErrors(FieldName.forexRate)}
+          onFocus={() => clearError(FieldName.forexRate)}
+          value={forexRateValue as string}
         />
-      )}
-      {errors && errors.fobPrice && !state.isCalculateFob && (
-        <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
-          {errors.fobPrice.message}
-        </Text>
-      )}
+        {errors && errors.forexRate && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
+            {errors.forexRate.message}
+          </Text>
+        )}
 
-      {state.isCalculateFob && (
+        <NativeButton
+          // style={{ marginVertical: 8, backgroundColor: theme.colors.primary }}
+          title='Or click here to get currency rate'
+          onPress={() => {
+            showModal()
+          }}
+        />
+
         <TextInput
           //@ts-ignore
           ref={register(
             {
-              name: FieldName.gpInPercentage
+              name: FieldName.freight
             },
             validationOptions
           )}
-          label='Desired gross profit in %'
+          label='Freight cost percentage?'
           keyboardType='numeric'
           contextMenuHidden
           placeholder={
-            hasErrors(FieldName.gpInPercentage) ? '' : 'enter a value in %'
+            hasErrors(FieldName.freight) ? '' : 'Normally between 3 ~ 5%'
           }
-          style={globalStyles.textInput}
-          onChangeText={text => setValue(FieldName.gpInPercentage, text)}
-          error={hasErrors(FieldName.gpInPercentage)}
-          onFocus={() => clearError(FieldName.gpInPercentage)}
-          value={gpInPercentageValue as string}
+          style={{
+            ...globalStyles.textInput,
+            marginTop: 5
+          }}
+          onChangeText={text => setValue(FieldName.freight, text)}
+          error={hasErrors(FieldName.freight)}
+          onFocus={() => clearError(FieldName.freight)}
+          value={freightValue as string}
         />
-      )}
-      {errors && errors.gpInPercentage && state.isCalculateFob && (
-        <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
-          {errors.gpInPercentage.message}
-        </Text>
-      )}
-      <TextInput
-        //@ts-ignore
-        ref={register(
-          {
-            name: FieldName.forexRate
-          },
-          validationOptions
+
+        {errors && errors.freight && (
+          <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
+            {errors.freight.message}
+          </Text>
         )}
-        label='Local currency rate'
-        keyboardType='numeric'
-        contextMenuHidden
-        placeholder={
-          hasErrors(FieldName.forexRate)
-            ? ''
-            : 'enter 1 if you are trading in USD'
-        }
-        style={globalStyles.textInput}
-        onChangeText={text => setValue(FieldName.forexRate, text)}
-        error={hasErrors(FieldName.forexRate)}
-        onFocus={() => clearError(FieldName.forexRate)}
-        value={forexRateValue as string}
-      />
-      {errors && errors.forexRate && (
-        <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
-          {errors.forexRate.message}
-        </Text>
-      )}
+        <Button
+          mode='contained'
+          style={{ marginTop: 5, backgroundColor: theme.colors.primary }}
+          // @ts-ignore
+          onPress={handleSubmit(onSubmit)}
+        >
+          See Result
+        </Button>
 
-      <NativeButton
-        // style={{ marginVertical: 8, backgroundColor: theme.colors.primary }}
-        title='Or click here to get currency rate'
-        onPress={() => {
-          showModal()
-        }}
-      />
+        <Portal>
+          <Dialog visible={isModalVisible} onDismiss={hideModal}>
+            <View style={globalStyles.modal}>
+              <Text style={globalStyles.modalTitle}>Select a country</Text>
+              <Picker
+                selectedValue={currency}
+                style={{ backgroundColor: 'white' }}
+                onValueChange={(val, idx) => {
+                  setCurrency(val)
+                }}
+              >
+                {res.data &&
+                  res.data.countries &&
+                  _.uniq(
+                    res.data.countries
+                      .filter((country, i) => {
+                        return !country.currency.includes(',')
+                      })
+                      .map(item => item.currency)
+                  ).map((currency, i) => {
+                    return (
+                      <Picker.Item label={currency} value={currency} key={i} />
+                    )
+                  })}
+              </Picker>
+              <Button
+                style={{
+                  ...globalStyles.modalConfirmButton,
+                  marginTop: 8
+                }}
+                mode='contained'
+                onPress={() => {
+                  getCurrencyRate()
+                  hideModal()
+                }}
+              >
+                Save
+              </Button>
+            </View>
+          </Dialog>
+        </Portal>
 
-      <TextInput
-        //@ts-ignore
-        ref={register(
-          {
-            name: FieldName.freight
-          },
-          validationOptions
-        )}
-        label='Freight cost percentage?'
-        keyboardType='numeric'
-        contextMenuHidden
-        placeholder={
-          hasErrors(FieldName.freight) ? '' : 'Normally between 3 ~ 5%'
-        }
-        style={{
-          ...globalStyles.textInput,
-          marginTop: 5
-        }}
-        onChangeText={text => setValue(FieldName.freight, text)}
-        error={hasErrors(FieldName.freight)}
-        onFocus={() => clearError(FieldName.freight)}
-        value={freightValue as string}
-      />
-
-      {errors && errors.freight && (
-        <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
-          {errors.freight.message}
-        </Text>
-      )}
-      <Button
-        mode='contained'
-        style={{ marginTop: 5, backgroundColor: theme.colors.primary }}
-        // @ts-ignore
-        onPress={handleSubmit(onSubmit)}
-      >
-        See Result
-      </Button>
-
-      <Portal>
-        <Dialog visible={isModalVisible} onDismiss={hideModal}>
-          <View style={globalStyles.modal}>
-            <Text style={globalStyles.modalTitle}>Select a country</Text>
-            <Picker
-              selectedValue={currency}
-              style={{ backgroundColor: 'white' }}
-              onValueChange={(val, idx) => {
-                setCurrency(val)
-              }}
-            >
-              {res.data &&
-                res.data.countries &&
-                _.uniq(
-                  res.data.countries
-                    .filter((country, i) => {
-                      return !country.currency.includes(',')
-                    })
-                    .map(item => item.currency)
-                ).map((currency, i) => {
-                  return (
-                    <Picker.Item label={currency} value={currency} key={i} />
-                  )
-                })}
-            </Picker>
-            <Button
-              style={{
-                ...globalStyles.modalConfirmButton,
-                marginTop: 8
-              }}
-              mode='contained'
-              onPress={() => {
-                getCurrencyRate()
-                hideModal()
-              }}
-            >
-              Save
-            </Button>
-          </View>
-        </Dialog>
-      </Portal>
-
-      <Snackbar
-        visible={displaySnackbar}
-        onDismiss={() => setDisplaySnackbar(false)}
-        action={{
-          label: 'OK',
-          onPress: () => {
-            setDisplaySnackbar(false)
-          }
-        }}
-      >
-        This country is not yet supported.
-      </Snackbar>
+        <Snackbar
+          visible={displaySnackbar}
+          onDismiss={() => setDisplaySnackbar(false)}
+          action={{
+            label: 'OK',
+            onPress: () => {
+              setDisplaySnackbar(false)
+            }
+          }}
+        >
+          This country is not yet supported.
+        </Snackbar>
+      </View>
     </Container>
   )
 }

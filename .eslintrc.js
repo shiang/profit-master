@@ -11,7 +11,7 @@ module.exports = {
       version: '16.8.3'
     }
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'
@@ -34,6 +34,7 @@ module.exports = {
     'jsx-quotes': ['error', 'prefer-single'],
     camelcase: ['off'],
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn'
+    'react-hooks/exhaustive-deps': 'warn',
+    'react/prop-types': 0
   }
 }

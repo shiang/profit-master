@@ -28,22 +28,24 @@ const Container: React.FC<Props> = ({ children, theme }) => {
         style={{ flex: 1, backgroundColor: theme.colors.background }}
       >
         <ScrollView
-          style={{ padding: 25, marginBottom: 10 }}
+          contentContainerStyle={{
+            paddingHorizontal: 25,
+            paddingVertical: 10,
+            flex: 1
+          }}
           keyboardShouldPersistTaps='never'
         >
           {children}
+          <View style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+            <AdMobBanner
+              bannerSize='banner'
+              adUnitID='ca-app-pub-3940256099942544/6300978111' // Test ID, Replace with your-admob-unit-id
+              testDeviceID='EMULATOR'
+              servePersonalizedAds // true or false
+              onDidFailToReceiveAdWithError={() => console.log('load ad fail')}
+            />
+          </View>
         </ScrollView>
-        <View
-          style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
-        >
-          <AdMobBanner
-            bannerSize='banner'
-            adUnitID='ca-app-pub-3940256099942544/6300978111' // Test ID, Replace with your-admob-unit-id
-            testDeviceID='EMULATOR'
-            servePersonalizedAds // true or false
-            onDidFailToReceiveAdWithError={() => console.log('load ad fail')}
-          />
-        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   )

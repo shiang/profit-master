@@ -1,7 +1,7 @@
 import './src/fixtimerbug'
 
 import React from 'react'
-import { StyleSheet, Text, AppRegistry } from 'react-native'
+import { StyleSheet, Text, AppRegistry, View } from 'react-native'
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper'
 import { createAppContainer } from 'react-navigation'
 import { RootStack, AccountStack } from './src/routes'
@@ -75,7 +75,7 @@ const AppContainer = createAppContainer(
             <Ionicons
               name={iconName}
               size={32}
-              color={focused ? '#30CC9A' : '#F1563B'}
+              color={focused ? '#30CC9A' : '#747477'}
             />
           )
         },

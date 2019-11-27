@@ -1,12 +1,17 @@
 import React, { useContext } from 'react'
-import { Button } from 'react-native-paper'
-import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
-import { Theme, withTheme } from 'react-native-paper';
-import { AuthContext } from './AuthProvider';
-import AuthScreen from './AuthScreen';
-import Container from './Container';
-import { CalculatorContext } from './CalculatorProvider';
-
+import { Button, ActivityIndicator } from 'react-native-paper'
+import {
+  NavigationStackProp,
+  NavigationStackOptions
+} from 'react-navigation-stack'
+import { Theme, withTheme } from 'react-native-paper'
+import { AuthContext } from './AuthProvider'
+import AuthScreen from './AuthScreen'
+import Container from './Container'
+import { CalculatorContext } from './CalculatorProvider'
+import CalcGPCard from './CalcGPCard'
+import CalcFOBCard from './CalcFOBCard'
+import { View } from 'react-native'
 
 interface NavigationParams {
   key: string
@@ -22,38 +27,22 @@ interface NavOptions {
 }
 
 const Home: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
+  const { isLoggedIn, isLoading } = useContext(AuthContext)
 
-  const { isLoggedIn } = useContext(AuthContext)
-  const { dispatch } = useContext(CalculatorContext)
+  if (isLoading) {
+    return (
+      <Container {...{ theme }}>
+        <ActivityIndicator animating color={theme.colors.primary} />
+      </Container>
+    )
+  }
 
-  return isLoggedIn ? (
-    <Container {...{theme}}>
-       <Button
-          mode='contained'
-          style={{ marginTop: 25 }}
-          onPress={() => {
-            navigation.navigate('StepOne')
-            dispatch({
-              type: 'IS_CALC_FOB',
-              payload: {
-                isCalculateFob: false
-              }
-            })
-          } }
-      >Calculate Gross Profit</Button>
-      <Button
-          mode='contained'
-          style={{ marginTop: 25 }}
-          onPress={() => {
-            navigation.navigate('StepOne')
-            dispatch({
-              type: 'IS_CALC_FOB',
-              payload: {
-                isCalculateFob: true
-              }
-            })
-          }}
-      >Calculate FOB Price</Button>
+  return isLoggedIn && !isLoading ? (
+    <Container {...{ theme }}>
+      <View style={{ flex: 1 }}>
+        <CalcGPCard {...{ navigation, theme }} />
+        <CalcFOBCard {...{ navigation, theme }} />
+      </View>
     </Container>
   ) : (
     <AuthScreen {...{ navigation, theme }} />

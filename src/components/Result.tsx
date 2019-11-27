@@ -7,7 +7,8 @@ import {
   Portal,
   Dialog,
   TextInput,
-  withTheme
+  withTheme,
+  Snackbar
 } from 'react-native-paper'
 import {
   NavigationStackProp,
@@ -78,7 +79,7 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       setGpInPercentage(`${Number(gpInPercentage).toFixed(2)}%`)
       setGpInDollar(`${Number(gpInDollar).toFixed(2)}%`)
     }
-  }, [])
+  }, [disty, gst, landedCost, margin, rebate, rrp, state])
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -108,92 +109,114 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     })
   }
 
+  const [displaySnackbar, setDisplaySnackbar] = useState<boolean>(false)
+
   return (
     <Container {...{ theme }}>
-      <>
-        {gpInDollar && !isCalculateFob && (
-          <Text>You are making ${gpInDollar}</Text>
-        )}
-        {gpInPercentage && !isCalculateFob && (
-          <Text>The gross profit percentage is {gpInPercentage}</Text>
-        )}
-        {fobPrice && fobPrice.length > 0 && isCalculateFob && (
-          <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
-            The FOB Price needs to be $USD {fobPrice}
-          </Text>
-        )}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Button
-            mode='contained'
+      <View style={{ flex: 1 }}>
+        <>
+          {gpInDollar && !isCalculateFob && (
+            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+              You are making ${gpInDollar}
+            </Text>
+          )}
+          {gpInPercentage && !isCalculateFob && (
+            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+              The gross profit percentage is {gpInPercentage}
+            </Text>
+          )}
+          {fobPrice && fobPrice.length > 0 && isCalculateFob && (
+            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+              The FOB Price needs to be $USD {fobPrice}
+            </Text>
+          )}
+          <View
             style={{
-              margin: 5
-            }}
-            onPress={() => {
-              if (user) {
-                showModal()
-              } else {
-                navigation.navigate({ routeName: 'Account' })
-              }
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
-            Save result
-          </Button>
-
-          <Button
-            mode='contained'
-            style={{
-              margin: 5
-            }}
-            onPress={() => {
-              navigation.reset(
-                [NavigationActions.navigate({ routeName: 'Home' })],
-                0
-              )
-              dispatch({
-                type: 'RESET'
-              })
-            }}
-          >
-            Start Over
-          </Button>
-        </View>
-      </>
-      <Portal>
-        <Dialog visible={isModalVisible} onDismiss={hideModal}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Enter a name to save</Text>
-            <TextInput
-              onChangeText={text => setResultName(text)}
-              value={resultName}
-              selectionColor='#30CC9A'
-              underlineColor='#30CC9A'
-              style={globalStyles.textInput}
-              theme={{
-                colors: {
-                  text: '#30CC9A'
+            <Button
+              mode='contained'
+              style={{
+                margin: 5
+              }}
+              onPress={() => {
+                if (user) {
+                  showModal()
+                } else {
+                  navigation.navigate({ routeName: 'Account' })
                 }
               }}
-            />
+            >
+              Save result
+            </Button>
+
             <Button
-              style={styles.button}
               mode='contained'
-              onPress={async () => {
-                await handleSaveResult()
-                setResultName('')
-                hideModal()
+              style={{
+                margin: 5
+              }}
+              onPress={() => {
+                navigation.reset(
+                  [NavigationActions.navigate({ routeName: 'Home' })],
+                  0
+                )
+                dispatch({
+                  type: 'RESET'
+                })
               }}
             >
-              Save
+              Start Over
             </Button>
           </View>
-        </Dialog>
-      </Portal>
+        </>
+        <Portal>
+          <Dialog visible={isModalVisible} onDismiss={hideModal}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Enter a name to save</Text>
+              <TextInput
+                onChangeText={text => setResultName(text)}
+                value={resultName}
+                selectionColor='#30CC9A'
+                underlineColor='#30CC9A'
+                style={globalStyles.textInput}
+                theme={{
+                  colors: {
+                    text: '#30CC9A'
+                  }
+                }}
+              />
+              <Button
+                style={styles.button}
+                mode='contained'
+                onPress={async () => {
+                  await handleSaveResult()
+                  setResultName('')
+                  hideModal()
+                  setDisplaySnackbar(true)
+                }}
+              >
+                Save
+              </Button>
+            </View>
+          </Dialog>
+        </Portal>
+        <Snackbar
+          visible={displaySnackbar}
+          onDismiss={() => setDisplaySnackbar(false)}
+          action={{
+            label: 'View',
+            onPress: () => {
+              navigation.navigate({ routeName: 'SavedCalc' })
+              setDisplaySnackbar(false)
+            }
+          }}
+        >
+          Saved successfully.
+        </Snackbar>
+      </View>
     </Container>
   )
 }

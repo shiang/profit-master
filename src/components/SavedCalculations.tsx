@@ -66,7 +66,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
     getCalcData().then(histories => {
       setData(Object.values(histories))
     })
-  }, [])
+  }, [user])
 
   if (!data) {
     return (
@@ -76,92 +76,103 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
     )
   }
   return (
-    <Container {...{ theme }}>
-      <FlatList
-        data={data}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => {
-          return (
-            <Card style={{ marginVertical: 8 }} elevation={3}>
-              <Card.Title title={item.name} />
-              <Divider style={{ marginBottom: 8 }} />
-              <Card.Content>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly'
-                  }}
-                >
-                  <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold' }}>Gross Profit $</Text>
-                    <Subheading>${item.gpInDollar}</Subheading>
-                  </View>
-                  <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold' }}>Gross Profit %</Text>
-                    <Subheading>{item.gpInPercentage}</Subheading>
-                  </View>
+    <FlatList
+      data={data}
+      keyExtractor={item => item.id}
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingVertical: 10,
+        paddingHorizontal: 25
+      }}
+      renderItem={({ item }) => {
+        return (
+          <Card
+            style={{ marginVertical: 8, backgroundColor: '#313B4A' }}
+            elevation={3}
+          >
+            <Card.Title title={item.name} />
+            <Divider style={{ marginBottom: 8 }} />
+            <Card.Content>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly'
+                }}
+              >
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>
+                    Gross Profit $
+                  </Text>
+                  <Subheading>${item.gpInDollar}</Subheading>
                 </View>
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>
+                    Gross Profit %
+                  </Text>
+                  <Subheading>{item.gpInPercentage}</Subheading>
+                </View>
+              </View>
 
-                <List.Accordion title='Details'>
-                  <DataTable>
-                    <DataTable.Header>
-                      <DataTable.Title>Category</DataTable.Title>
-                      <DataTable.Title>Value</DataTable.Title>
-                    </DataTable.Header>
+              <List.Accordion title='Details'>
+                <DataTable>
+                  <DataTable.Header>
+                    <DataTable.Title>Category</DataTable.Title>
+                    <DataTable.Title>Value</DataTable.Title>
+                  </DataTable.Header>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Retail Price</DataTable.Cell>
-                      <DataTable.Cell>${item.rrp}</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Retail Price</DataTable.Cell>
+                    <DataTable.Cell>${item.rrp}</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Sales Tax</DataTable.Cell>
-                      <DataTable.Cell>{item.gst}%</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Sales Tax</DataTable.Cell>
+                    <DataTable.Cell>{item.gst}%</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Dist'y Margin</DataTable.Cell>
-                      <DataTable.Cell>{item.disty}%</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Ditsy Margin</DataTable.Cell>
+                    <DataTable.Cell>{item.disty}%</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Retailer Margin</DataTable.Cell>
-                      <DataTable.Cell>{item.margin}%</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Retailer Margin</DataTable.Cell>
+                    <DataTable.Cell>{item.margin}%</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Rebate</DataTable.Cell>
-                      <DataTable.Cell>{item.rebate}%</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Rebate</DataTable.Cell>
+                    <DataTable.Cell>{item.rebate}%</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>FOB Price</DataTable.Cell>
-                      <DataTable.Cell>${item.fobPrice}</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>FOB Price</DataTable.Cell>
+                    <DataTable.Cell>${item.fobPrice}</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>FX Rate</DataTable.Cell>
-                      <DataTable.Cell>{item.forexRate}</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>FX Rate</DataTable.Cell>
+                    <DataTable.Cell>{item.forexRate}</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Freight</DataTable.Cell>
-                      <DataTable.Cell>{item.freight}%</DataTable.Cell>
-                    </DataTable.Row>
+                  <DataTable.Row>
+                    <DataTable.Cell>Freight</DataTable.Cell>
+                    <DataTable.Cell>{item.freight}%</DataTable.Cell>
+                  </DataTable.Row>
 
-                    <DataTable.Row>
-                      <DataTable.Cell>Landed Cost</DataTable.Cell>
-                      <DataTable.Cell>${item.landedCost}</DataTable.Cell>
-                    </DataTable.Row>
-                  </DataTable>
-                </List.Accordion>
-              </Card.Content>
-            </Card>
-          )
-        }}
-      />
-    </Container>
+                  <DataTable.Row>
+                    <DataTable.Cell>Landed Cost</DataTable.Cell>
+                    <DataTable.Cell>${item.landedCost}</DataTable.Cell>
+                  </DataTable.Row>
+                </DataTable>
+              </List.Accordion>
+            </Card.Content>
+          </Card>
+        )
+      }}
+    />
   )
 }
 

@@ -8,7 +8,7 @@ const FinalStepBanner: React.FC<{}> = () => {
   useEffect(() => {
     setTimeout(() => {
       setVisible(true)
-    }, 700)
+    }, 500)
   }, [])
 
   return (
@@ -22,9 +22,7 @@ const FinalStepBanner: React.FC<{}> = () => {
       ]}
       icon={({ size }) => (
         <Image
-          source={{
-            uri: 'https://avatars3.githubusercontent.com/u/17571969?s=400&v=4'
-          }}
+          source={require('../../assets/yen.png')}
           style={{
             width: size,
             height: size
