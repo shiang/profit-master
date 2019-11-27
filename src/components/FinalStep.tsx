@@ -72,9 +72,9 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const fobPriceValue = watch(FieldName.fobPrice)
   const freightValue = watch(FieldName.freight)
 
-  const [currency, setCurrency] = useState<string | null>(null)
   const [displaySnackbar, setDisplaySnackbar] = useState<boolean>(false)
 
+  let currencies
   const [res] = useCountriesQuery()
 
   const hasErrors = (fieldName: string) => {
@@ -146,6 +146,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
     register({ name: FieldName.freight })
   }, [register])
 
+  const [currency, setCurrency] = useState<string>('')
   const getCurrencyRate = async () => {
     try {
       const data = await axios.get(
@@ -172,6 +173,18 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         <ActivityIndicator animating color={theme.colors.primary} />
       </Container>
     )
+  }
+
+  if (res.data && res.data.countries) {
+    currencies = _.uniq(
+      res.data.countries
+        .filter((country, i) => {
+          return !country.currency.includes(',') && country.currency.length > 0
+        })
+        .map(item => item.currency)
+    )
+
+    currencies.unshift('')
   }
 
   return (
@@ -323,15 +336,8 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
                   setCurrency(val)
                 }}
               >
-                {res.data &&
-                  res.data.countries &&
-                  _.uniq(
-                    res.data.countries
-                      .filter((country, i) => {
-                        return !country.currency.includes(',')
-                      })
-                      .map(item => item.currency)
-                  ).map((currency, i) => {
+                {currencies &&
+                  currencies.map((currency, i) => {
                     return (
                       <Picker.Item label={currency} value={currency} key={i} />
                     )
@@ -343,6 +349,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
                   marginTop: 8
                 }}
                 mode='contained'
+                disabled={currency.length === 0}
                 onPress={() => {
                   getCurrencyRate()
                   hideModal()

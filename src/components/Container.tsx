@@ -33,7 +33,7 @@ const Container: React.FC<Props> = ({ children, theme }) => {
             paddingVertical: 10,
             flex: 1
           }}
-          keyboardShouldPersistTaps='never'
+          keyboardShouldPersistTaps='handled'
         >
           {children}
           <View style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
