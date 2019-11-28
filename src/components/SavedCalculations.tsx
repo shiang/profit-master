@@ -1,11 +1,14 @@
+import axios from 'axios'
+import * as FileSystem from 'expo-file-system'
 import * as firebase from 'firebase'
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, Share, Text, View } from 'react-native'
 import {
   ActivityIndicator,
   Card,
   DataTable,
   Divider,
+  IconButton,
   List,
   Subheading,
   withTheme
@@ -16,11 +19,11 @@ import {
   NavigationStackProp
 } from 'react-navigation-stack'
 import _ from 'underscore'
+import getEnvVars from '../../environment'
 import { globalStyles } from '../styles'
 import { AuthContext } from './AuthProvider'
 import { CalculatorState } from './CalculatorProvider'
 import Container from './Container'
-
 interface Props {
   navigation: NavigationStackProp<{}>
   theme: Theme
@@ -67,6 +70,70 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
     })
   }, [user])
 
+  // const fileToBase64 = (filename: string, name: string) => {
+  //   return new Promise(resolve => {
+  //     var file = new File([filename], `${name}.csv`)
+  //     var reader = new FileReader()
+  //     // Read file content on file loaded event
+  //     reader.onload = function(event) {
+  //       resolve(event.target.result)
+  //     }
+
+  //     // Convert data to base64
+  //     reader.readAsDataURL(file)
+  //   })
+  // }
+
+  const onShare = async (index: number) => {
+    const { calcCSVExportUrl } = getEnvVars()
+    const res = await axios({
+      method: 'post',
+      url: calcCSVExportUrl,
+      data: data[index]
+    })
+
+    if (res.status === 200) {
+      const regex = / /g
+      const fileName = data[index].name.replace(regex, '_')
+      const path = FileSystem.documentDirectory + `/${fileName}.csv`
+      await FileSystem.writeAsStringAsync(path, res.data, {
+        encoding: 'utf8'
+      })
+      // console.log({ result })
+      await Share.share(
+        {
+          title: 'Sharing calculation',
+          url: path,
+          message: 'You are sharing this calculation.'
+        },
+        {
+          excludedActivityTypes: [
+            'com.apple.UIKit.activity.PostToWeibo',
+            'com.apple.UIKit.activity.Print',
+            'com.apple.UIKit.activity.CopyToPasteboard',
+            'com.apple.UIKit.activity.AssignToContact',
+            'com.apple.UIKit.activity.SaveToCameraRoll',
+            'com.apple.UIKit.activity.AddToReadingList',
+            'com.apple.UIKit.activity.PostToFlickr',
+            'com.apple.UIKit.activity.PostToVimeo',
+            'com.apple.UIKit.activity.PostToTencentWeibo',
+            // 'com.apple.UIKit.activity.AirDrop',
+            'com.apple.UIKit.activity.OpenInIBooks',
+            'com.apple.UIKit.activity.MarkupAsPDF',
+            'com.apple.reminders.RemindersEditorExtension',
+            'com.apple.mobilenotes.SharingExtension',
+            'com.apple.mobileslideshow.StreamShareService',
+            'com.linkedin.LinkedIn.ShareExtension',
+            'pinterest.ShareExtension',
+            'com.google.GooglePlus.ShareExtension',
+            'com.tumblr.tumblr.Share-With-Tumblr',
+            'net.whatsapp.WhatsApp.ShareExtension' //WhatsApp
+          ]
+        }
+      )
+    }
+  }
+
   if (!data) {
     return (
       <Container {...{ theme }}>
@@ -84,7 +151,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
           backgroundColor: theme.colors.background,
           paddingVertical: 10
         }}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <Card
               style={{ marginVertical: 8, backgroundColor: '#313B4A' }}
@@ -93,6 +160,15 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
               <Card.Title
                 title={item.name}
                 titleStyle={globalStyles.textBaseStyle}
+                right={props => (
+                  <IconButton
+                    {...props}
+                    icon='share'
+                    onPress={() => {
+                      onShare(index)
+                    }}
+                  />
+                )}
               />
               <Divider style={{ marginBottom: 8 }} />
               <Card.Content>
@@ -257,7 +333,7 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
 }
 
 SavedCalculations.navigationOptions = {
-  title: 'Histories'
+  title: 'History'
 }
 
 export default withTheme(SavedCalculations)
