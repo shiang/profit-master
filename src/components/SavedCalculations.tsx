@@ -1,26 +1,25 @@
-import React, { useEffect, useContext, useState } from 'react'
-import { View, Text, FlatList, StyleSheet } from 'react-native'
-import {
-  NavigationStackProp,
-  NavigationStackOptions
-} from 'react-navigation-stack'
-import Container from './Container'
-import { Theme } from 'react-native-paper/lib/typescript/src/types'
-import { AuthContext } from './AuthProvider'
 import * as firebase from 'firebase'
+import React, { useContext, useEffect, useState } from 'react'
+import { FlatList, Text, View } from 'react-native'
 import {
-  withTheme,
+  ActivityIndicator,
   Card,
-  Subheading,
   DataTable,
-  Title,
-  Headline,
   Divider,
   List,
-  ActivityIndicator
+  Subheading,
+  withTheme
 } from 'react-native-paper'
+import { Theme } from 'react-native-paper/lib/typescript/src/types'
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from 'react-navigation-stack'
 import _ from 'underscore'
+import { globalStyles } from '../styles'
+import { AuthContext } from './AuthProvider'
 import { CalculatorState } from './CalculatorProvider'
+import Container from './Container'
 
 interface Props {
   navigation: NavigationStackProp<{}>
@@ -76,103 +75,184 @@ const SavedCalculations: React.FC<Props> & NavOptions = ({ theme }) => {
     )
   }
   return (
-    <FlatList
-      data={data}
-      keyExtractor={item => item.id}
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors.background,
-        paddingVertical: 10,
-        paddingHorizontal: 25
-      }}
-      renderItem={({ item }) => {
-        return (
-          <Card
-            style={{ marginVertical: 8, backgroundColor: '#313B4A' }}
-            elevation={3}
-          >
-            <Card.Title title={item.name} />
-            <Divider style={{ marginBottom: 8 }} />
-            <Card.Content>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly'
-                }}
-              >
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontWeight: 'bold', color: 'white' }}>
-                    Gross Profit $
-                  </Text>
-                  <Subheading>${item.gpInDollar}</Subheading>
+    <Container {...{ theme }}>
+      <FlatList
+        data={data}
+        keyExtractor={item => item.id}
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+          paddingVertical: 10
+        }}
+        renderItem={({ item }) => {
+          return (
+            <Card
+              style={{ marginVertical: 8, backgroundColor: '#313B4A' }}
+              elevation={3}
+            >
+              <Card.Title
+                title={item.name}
+                titleStyle={globalStyles.textBaseStyle}
+              />
+              <Divider style={{ marginBottom: 8 }} />
+              <Card.Content>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly'
+                  }}
+                >
+                  <View style={{ alignItems: 'center' }}>
+                    <Text
+                      style={{ ...globalStyles.textBaseStyle, color: 'white' }}
+                    >
+                      Gross Profit $
+                    </Text>
+                    <Subheading>${item.gpInDollar}</Subheading>
+                  </View>
+                  <View style={{ alignItems: 'center' }}>
+                    <Text
+                      style={{ ...globalStyles.textBaseStyle, color: 'white' }}
+                    >
+                      Gross Profit %
+                    </Text>
+                    <Subheading>{item.gpInPercentage}</Subheading>
+                  </View>
                 </View>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontWeight: 'bold', color: 'white' }}>
-                    Gross Profit %
-                  </Text>
-                  <Subheading>{item.gpInPercentage}</Subheading>
-                </View>
-              </View>
 
-              <List.Accordion title='Details'>
-                <DataTable>
-                  <DataTable.Header>
-                    <DataTable.Title>Category</DataTable.Title>
-                    <DataTable.Title>Value</DataTable.Title>
-                  </DataTable.Header>
+                <List.Accordion
+                  title='Details'
+                  titleStyle={globalStyles.textBaseStyle}
+                >
+                  <DataTable>
+                    <DataTable.Header>
+                      <DataTable.Title>
+                        <Text style={globalStyles.textBaseStyle}>Category</Text>
+                      </DataTable.Title>
+                      <DataTable.Title>
+                        <Text style={globalStyles.textBaseStyle}>Value</Text>
+                      </DataTable.Title>
+                    </DataTable.Header>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Retail Price</DataTable.Cell>
-                    <DataTable.Cell>${item.rrp}</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          Retail Price
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          ${item.rrp}
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Sales Tax</DataTable.Cell>
-                    <DataTable.Cell>{item.gst}%</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          Sales Tax
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.gst}%
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Ditsy Margin</DataTable.Cell>
-                    <DataTable.Cell>{item.disty}%</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          Disty Margin
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.disty}%
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Retailer Margin</DataTable.Cell>
-                    <DataTable.Cell>{item.margin}%</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          Retailer Margin
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.margin}%
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Rebate</DataTable.Cell>
-                    <DataTable.Cell>{item.rebate}%</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>Rebate</Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.rebate}%
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>FOB Price</DataTable.Cell>
-                    <DataTable.Cell>${item.fobPrice}</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          FOB Price
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          ${item.fobPrice} (USD)
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>FX Rate</DataTable.Cell>
-                    <DataTable.Cell>{item.forexRate}</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>FX Rate</Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.forexRate}
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Freight</DataTable.Cell>
-                    <DataTable.Cell>{item.freight}%</DataTable.Cell>
-                  </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>Freight</Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          {item.freight}%
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
 
-                  <DataTable.Row>
-                    <DataTable.Cell>Landed Cost</DataTable.Cell>
-                    <DataTable.Cell>${item.landedCost}</DataTable.Cell>
-                  </DataTable.Row>
-                </DataTable>
-              </List.Accordion>
-            </Card.Content>
-          </Card>
-        )
-      }}
-    />
+                    <DataTable.Row>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          Landed Cost
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell>
+                        <Text style={globalStyles.textBaseStyle}>
+                          ${item.landedCost}
+                        </Text>
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  </DataTable>
+                </List.Accordion>
+              </Card.Content>
+            </Card>
+          )
+        }}
+      />
+    </Container>
   )
 }
 

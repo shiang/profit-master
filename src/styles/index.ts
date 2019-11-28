@@ -1,18 +1,21 @@
 import { StyleSheet } from 'react-native'
-import { NavigationStackOptions } from 'react-navigation-stack'
 
 export const globalStyles = StyleSheet.create({
+  textBaseStyle: {
+    fontFamily: 'avenir-next-regular',
+    color: '#30CC9A'
+  },
   pageHeaderText: {
     color: '#30CC9A',
-    fontWeight: 'bold',
+    fontFamily: 'avenir-next-bold',
     fontSize: 25,
-    marginBottom: 15
+    marginVertical: 10
   },
   title: {
     fontSize: 16,
     marginBottom: 5,
     color: 'grey',
-    fontWeight: 'bold'
+    fontFamily: 'avenir-next-bold'
   },
   textInput: {
     marginBottom: 5,
@@ -24,13 +27,24 @@ export const globalStyles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'avenir-next-bold',
     color: '#30CC9A',
     marginBottom: 8
   },
   modalConfirmButton: {
     backgroundColor: '#30CC9A'
+  },
+  homeCardTitle: {
+    marginLeft: 15,
+    fontSize: 18,
+    fontFamily: 'avenir-next-bold'
   }
 })
 
-
+export const textInputLabelStyle = {
+  fonts: {
+    regular: {
+      fontFamily: 'avenir-next-regular'
+    }
+  }
+}

@@ -1,24 +1,23 @@
+import * as firebase from 'firebase'
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { CalculatorContext } from './CalculatorProvider'
+import { StyleSheet, Text, View } from 'react-native'
 import {
   Button,
-  Provider,
-  Portal,
   Dialog,
+  Portal,
+  Snackbar,
   TextInput,
-  withTheme,
-  Snackbar
+  withTheme
 } from 'react-native-paper'
-import {
-  NavigationStackProp,
-  NavigationStackOptions
-} from 'react-navigation-stack'
-import { NavigationActions } from 'react-navigation'
-import * as firebase from 'firebase'
-import { AuthContext } from './AuthProvider'
-import { globalStyles } from '../styles'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
+import { NavigationActions } from 'react-navigation'
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from 'react-navigation-stack'
+import { globalStyles } from '../styles'
+import { AuthContext } from './AuthProvider'
+import { CalculatorContext } from './CalculatorProvider'
 import Container from './Container'
 
 interface Props {
@@ -113,30 +112,24 @@ const Result: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 
   return (
     <Container {...{ theme }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <>
           {gpInDollar && !isCalculateFob && (
-            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+            <Text style={globalStyles.textBaseStyle}>
               You are making ${gpInDollar}
             </Text>
           )}
           {gpInPercentage && !isCalculateFob && (
-            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+            <Text style={globalStyles.textBaseStyle}>
               The gross profit percentage is {gpInPercentage}
             </Text>
           )}
           {fobPrice && fobPrice.length > 0 && isCalculateFob && (
-            <Text style={{ color: '#30CC9A', fontWeight: 'bold' }}>
+            <Text style={globalStyles.textBaseStyle}>
               The FOB Price needs to be $USD {fobPrice}
             </Text>
           )}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <Button
               mode='contained'
               style={{
@@ -238,6 +231,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#30CC9A'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   }
 })
 

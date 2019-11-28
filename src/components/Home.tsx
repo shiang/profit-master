@@ -1,17 +1,15 @@
 import React, { useContext } from 'react'
-import { Button, ActivityIndicator } from 'react-native-paper'
+import { View } from 'react-native'
+import { ActivityIndicator, Theme, withTheme } from 'react-native-paper'
 import {
-  NavigationStackProp,
-  NavigationStackOptions
+  NavigationStackOptions,
+  NavigationStackProp
 } from 'react-navigation-stack'
-import { Theme, withTheme } from 'react-native-paper'
 import { AuthContext } from './AuthProvider'
 import AuthScreen from './AuthScreen'
-import Container from './Container'
-import { CalculatorContext } from './CalculatorProvider'
-import CalcGPCard from './CalcGPCard'
 import CalcFOBCard from './CalcFOBCard'
-import { View } from 'react-native'
+import CalcGPCard from './CalcGPCard'
+import Container from './Container'
 
 interface NavigationParams {
   key: string
@@ -50,7 +48,7 @@ const Home: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 }
 
 Home.navigationOptions = {
-  title: 'Home'
+  header: null
 }
 
 export default withTheme(Home)

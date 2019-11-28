@@ -1,16 +1,17 @@
 import React, { useContext } from 'react'
 import {
-  Card,
   Avatar,
-  Paragraph,
   Button,
+  Card,
+  Paragraph,
   Theme,
   withTheme
 } from 'react-native-paper'
 import {
-  NavigationStackProp,
-  NavigationStackOptions
+  NavigationStackOptions,
+  NavigationStackProp
 } from 'react-navigation-stack'
+import { globalStyles } from '../styles'
 import { CalculatorContext } from './CalculatorProvider'
 
 interface NavigationParams {
@@ -34,17 +35,16 @@ const CalcFOBCard: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       <Card.Title
         title='Calculate FOB Price'
         left={props => <Avatar.Icon icon='chart-line-stacked' />}
-        titleStyle={{ marginLeft: 15, fontSize: 18 }}
+        titleStyle={globalStyles.homeCardTitle}
         style={{ marginTop: 10 }}
       />
       <Card.Content>
-        <Paragraph>
-          Start here if you are starting a new product but would like to find
-          out the maximum cost (FOB price) it needs to be in order for it to be
-          profitable in your existing sales channel.
+        <Paragraph style={{ fontFamily: 'avenir-next-regular' }}>
+          Making a new product but are not sure how its cost (FOB price) should
+          be in order to stay profit in your existing sales channel?
         </Paragraph>
       </Card.Content>
-      <Card.Actions>
+      <Card.Actions style={{ justifyContent: 'flex-end' }}>
         <Button
           onPress={() => {
             navigation.navigate('StepOne')

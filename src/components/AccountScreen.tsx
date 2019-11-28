@@ -1,13 +1,17 @@
-import React, { useContext, useEffect } from 'react'
-import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack'
-import { Theme } from 'react-native-paper/lib/typescript/src/types'
-import { AuthContext } from './AuthProvider'
-import { View, Text } from 'react-native'
-import { Button, Avatar } from 'react-native-paper'
-import AuthScreen from './AuthScreen'
 import * as firebase from 'firebase'
+import React, { useContext } from 'react'
+import { Text, View } from 'react-native'
+import { Avatar, Button, withTheme } from 'react-native-paper'
+import { Theme } from 'react-native-paper/lib/typescript/src/types'
 import { NavigationActions } from 'react-navigation'
-import _ from 'underscore'
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from 'react-navigation-stack'
+import { globalStyles } from '../styles'
+import { AuthContext } from './AuthProvider'
+import AuthScreen from './AuthScreen'
+import Container from './Container'
 
 interface NavigationParams {
   key: string
@@ -22,28 +26,48 @@ interface NavOptions {
   navigationOptions: NavigationStackOptions
 }
 
-
 const AccountScreen: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   const { isLoggedIn, user } = useContext(AuthContext)
 
   return isLoggedIn && user ? (
-    <View style={{ flex: 1, alignItems: 'center', padding: 40 }}>
-      <Avatar.Image size={64} source={require('../../assets/avatar.png')} />
-      <Text>{user.email}</Text>
-      <Button style={{ marginVertical: 8 }} onPress={() => {
-        navigation.navigate({ routeName: 'SavedCalc' })
-      }}>View Saved Calculations</Button>
-      <Button onPress={async () => {
-       try {
-        await firebase.auth().signOut()
-        navigation.reset([NavigationActions.navigate({ routeName: 'Account' })], 0)
-      } catch (err) {
-        console.error(err.message)
-      }
-      }}>Sign out</Button>
-    </View>
+    <Container {...{ theme }}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
+        <Avatar.Image size={64} source={require('../../assets/avatar.png')} />
+        <Text
+          style={{
+            ...globalStyles.textBaseStyle,
+            marginVertical: 8
+          }}
+        >
+          {user.email}
+        </Text>
+        <Button
+          style={{ marginVertical: 8 }}
+          onPress={() => {
+            navigation.navigate({ routeName: 'SavedCalc' })
+          }}
+        >
+          View Saved Calculations
+        </Button>
+        <Button
+          onPress={async () => {
+            try {
+              await firebase.auth().signOut()
+              navigation.reset(
+                [NavigationActions.navigate({ routeName: 'Account' })],
+                0
+              )
+            } catch (err) {
+              console.error(err.message)
+            }
+          }}
+        >
+          Sign out
+        </Button>
+      </View>
+    </Container>
   ) : (
-    <AuthScreen {...{navigation, theme }} />
+    <AuthScreen {...{ navigation, theme }} />
   )
 }
 
@@ -51,4 +75,4 @@ AccountScreen.navigationOptions = {
   title: 'Account'
 }
 
-export default AccountScreen
+export default withTheme(AccountScreen)

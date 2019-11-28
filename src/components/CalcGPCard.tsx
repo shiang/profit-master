@@ -1,16 +1,17 @@
 import React, { useContext } from 'react'
 import {
-  Card,
   Avatar,
-  Paragraph,
   Button,
+  Card,
+  Paragraph,
   Theme,
   withTheme
 } from 'react-native-paper'
 import {
-  NavigationStackProp,
-  NavigationStackOptions
+  NavigationStackOptions,
+  NavigationStackProp
 } from 'react-navigation-stack'
+import { globalStyles } from '../styles'
 import { CalculatorContext } from './CalculatorProvider'
 
 interface NavigationParams {
@@ -34,18 +35,16 @@ const CalcGPCard: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       <Card.Title
         title='Calculate Gross Profit'
         left={props => <Avatar.Icon icon='chart-pie' />}
-        titleStyle={{ marginLeft: 15, fontSize: 18 }}
+        titleStyle={globalStyles.homeCardTitle}
         style={{ marginTop: 10 }}
       />
       <Card.Content>
-        <Paragraph>
-          Start here to calculate the gross profit of an existing product. It
-          provides factors that are crucial to the gross profit of your product,
-          allowing you to adjust any of these factors to help you stimulate your
-          sales while staying in profit.
+        <Paragraph style={{ fontFamily: 'avenir-next-regular' }}>
+          Need to adjust pricing strategy for your existing product but are not
+          sure if you will stay in profit?
         </Paragraph>
       </Card.Content>
-      <Card.Actions>
+      <Card.Actions style={{ justifyContent: 'flex-end' }}>
         <Button
           onPress={() => {
             navigation.navigate('StepOne')

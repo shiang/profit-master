@@ -16,13 +16,33 @@ export interface CalculatorState {
 }
 
 type Action =
-  | { type: 'IS_CALC_FOB', payload: { isCalculateFob: boolean } }
-  | { type: 'STEP_1', payload: { rrp: string, gst: string } }
-  | { type: 'STEP_2', payload: { margin: string, disty: string, rebate: string } }
-  | { type: 'FINAL_STEP', payload: { fobPrice: string, forexRate: string, freight: string, landedCost: string } }
-  | { type: 'FOB_FINAL_STEP', payload: { gpInPercentage: string, gpInDollar: string, fobPrice: string, forexRate: string, freight: string, landedCost: string } }
+  | { type: 'IS_CALC_FOB'; payload: { isCalculateFob: boolean } }
+  | { type: 'STEP_1'; payload: { rrp: string; gst: string } }
+  | {
+      type: 'STEP_2'
+      payload: { margin: string; disty: string; rebate: string }
+    }
+  | {
+      type: 'FINAL_STEP'
+      payload: {
+        fobPrice: string
+        forexRate: string
+        freight: string
+        landedCost: string
+      }
+    }
+  | {
+      type: 'FOB_FINAL_STEP'
+      payload: {
+        gpInPercentage: string
+        gpInDollar: string
+        fobPrice: string
+        forexRate: string
+        freight: string
+        landedCost: string
+      }
+    }
   | { type: 'RESET' }
-
 
 interface Props {
   children?: React.ReactNode
@@ -89,7 +109,7 @@ const reducer = (state: CalculatorState, action: Action) => {
 }
 
 export const CalculatorContext = React.createContext<{
-  state: typeof initialState,
+  state: typeof initialState
   dispatch: (action: Action) => void
 }>({
   state: initialState,
@@ -97,7 +117,7 @@ export const CalculatorContext = React.createContext<{
 })
 
 const CalculatorProvider: React.FC<Props> = ({ children }) => {
-  const [ state, dispatch ] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   return (
     <CalculatorContext.Provider value={{ state, dispatch }}>

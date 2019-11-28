@@ -1,15 +1,15 @@
 import React, { useContext, useEffect } from 'react'
-import { Text, View } from 'react-native'
-import { CalculatorContext } from './CalculatorProvider'
-import { TextInput, Button, withTheme } from 'react-native-paper'
-import {
-  NavigationStackProp,
-  NavigationStackOptions
-} from 'react-navigation-stack'
-import { globalStyles } from '../styles'
-import { Theme } from 'react-native-paper/lib/typescript/src/types'
-import Container from './Container'
 import useForm from 'react-hook-form'
+import { Text, View } from 'react-native'
+import { Button, TextInput, withTheme } from 'react-native-paper'
+import { Theme } from 'react-native-paper/lib/typescript/src/types'
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from 'react-navigation-stack'
+import { globalStyles, textInputLabelStyle } from '../styles'
+import { CalculatorContext } from './CalculatorProvider'
+import Container from './Container'
 
 interface FormData {
   margin: string
@@ -99,6 +99,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             hasErrors(FieldName.margin) ? '' : 'enter a value in percentage'
           }
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           onChangeText={text => setValue(FieldName.margin, text)}
           error={hasErrors(FieldName.margin)}
           onFocus={() => clearError(FieldName.margin)}
@@ -124,6 +125,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             hasErrors(FieldName.disty) ? '' : 'enter a value in percentage'
           }
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           onChangeText={text => setValue(FieldName.disty, text)}
           error={hasErrors(FieldName.disty)}
           onFocus={() => clearError(FieldName.disty)}
@@ -149,6 +151,7 @@ const StepTwo: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             hasErrors(FieldName.rebate) ? '' : 'enter a value in percentage'
           }
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           onChangeText={text => setValue(FieldName.rebate, text)}
           error={hasErrors(FieldName.rebate)}
           onFocus={() => clearError(FieldName.rebate)}

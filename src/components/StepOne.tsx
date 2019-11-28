@@ -1,15 +1,15 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { CalculatorContext } from './CalculatorProvider'
-import { TextInput, Text, withTheme, Button } from 'react-native-paper'
-import {
-  NavigationStackProp,
-  NavigationStackOptions
-} from 'react-navigation-stack'
-import { Theme } from 'react-native-paper/lib/typescript/src/types'
-import { globalStyles } from '../styles'
-import Container from './Container'
+import React, { useContext, useEffect, useState } from 'react'
 import useForm from 'react-hook-form'
 import { View } from 'react-native'
+import { Button, Text, TextInput, withTheme } from 'react-native-paper'
+import { Theme } from 'react-native-paper/lib/typescript/src/types'
+import {
+  NavigationStackOptions,
+  NavigationStackProp
+} from 'react-navigation-stack'
+import { globalStyles, textInputLabelStyle } from '../styles'
+import { CalculatorContext } from './CalculatorProvider'
+import Container from './Container'
 
 interface FormData {
   rrp: string
@@ -85,10 +85,11 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             },
             validationOptions
           )}
-          label='What is the desired retail price'
+          label='Desired retail price'
           keyboardType='numeric'
           contextMenuHidden
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           placeholder={
             hasErrors(FieldName.rrp)
               ? ''
@@ -112,10 +113,11 @@ const StepOne: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             },
             validationOptions
           )}
-          label='What is the local sales tax?'
+          label='Local sales tax'
           keyboardType='numeric'
           contextMenuHidden
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           placeholder={
             hasErrors(FieldName.gst) ? '' : 'enter a value in percentage'
           }

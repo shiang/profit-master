@@ -1,29 +1,28 @@
-import React, { useContext, useEffect, useState, useRef } from 'react'
-import { Text, Picker, View } from 'react-native'
-import { CalculatorContext } from './CalculatorProvider'
+import axios from 'axios'
+import React, { useContext, useEffect, useState } from 'react'
+import useForm from 'react-hook-form'
+import { Button as NativeButton, Picker, Text, View } from 'react-native'
 import {
-  TextInput,
-  Button,
-  Theme,
-  withTheme,
-  Portal,
-  Dialog,
   ActivityIndicator,
-  Snackbar
+  Button,
+  Dialog,
+  Portal,
+  Snackbar,
+  TextInput,
+  Theme,
+  withTheme
 } from 'react-native-paper'
 import {
-  NavigationStackProp,
-  NavigationStackOptions
+  NavigationStackOptions,
+  NavigationStackProp
 } from 'react-navigation-stack'
-import { globalStyles } from '../styles'
-import Container from './Container'
-import useForm from 'react-hook-form'
-import { useCountriesQuery } from './generated/graphql'
-import FinalStepBanner from './FinalStepBanner'
-import { Button as NativeButton } from 'react-native'
-import axios from 'axios'
-import getEnvVars from '../../environment'
 import _ from 'underscore'
+import getEnvVars from '../../environment'
+import { globalStyles, textInputLabelStyle } from '../styles'
+import { CalculatorContext } from './CalculatorProvider'
+import Container from './Container'
+import FinalStepBanner from './FinalStepBanner'
+import { useCountriesQuery } from './generated/graphql'
 
 interface FormData {
   fobPrice: string
@@ -212,6 +211,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
                 : 'enter a price in your local currency'
             }
             style={globalStyles.textInput}
+            theme={textInputLabelStyle}
             onChangeText={text => setValue(FieldName.fobPrice, text)}
             error={hasErrors(FieldName.fobPrice)}
             onFocus={() => clearError(FieldName.fobPrice)}
@@ -268,6 +268,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
               : 'enter 1 if you are trading in USD'
           }
           style={globalStyles.textInput}
+          theme={textInputLabelStyle}
           onChangeText={text => setValue(FieldName.forexRate, text)}
           error={hasErrors(FieldName.forexRate)}
           onFocus={() => clearError(FieldName.forexRate)}
@@ -280,8 +281,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
         )}
 
         <NativeButton
-          // style={{ marginVertical: 8, backgroundColor: theme.colors.primary }}
-          title='Or click here to get currency rate'
+          title='Or use currency picker'
           onPress={() => {
             showModal()
           }}
@@ -305,6 +305,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
             ...globalStyles.textInput,
             marginTop: 5
           }}
+          theme={textInputLabelStyle}
           onChangeText={text => setValue(FieldName.freight, text)}
           error={hasErrors(FieldName.freight)}
           onFocus={() => clearError(FieldName.freight)}

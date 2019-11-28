@@ -1,18 +1,22 @@
-import './src/fixtimerbug'
-
-import React from 'react'
-import { StyleSheet, Text, AppRegistry, View } from 'react-native'
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper'
-import { createAppContainer } from 'react-navigation'
-import { RootStack, AccountStack } from './src/routes'
-import CalculatorProvider from './src/components/CalculatorProvider'
+/* eslint-disable react/display-name */
+import { Ionicons } from '@expo/vector-icons'
+import * as Font from 'expo-font'
 import * as firebase from 'firebase'
+import React, { useEffect } from 'react'
+import { AppRegistry, Text } from 'react-native'
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  Provider as PortalProvider
+} from 'react-native-paper'
+import { createAppContainer } from 'react-navigation'
+import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { createClient, Provider as GQLProvider } from 'urql'
 import getEnvVars from './environment'
 import AuthProvider from './src/components/AuthProvider'
-import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { Ionicons } from '@expo/vector-icons'
-import { Provider as GQLProvider, createClient } from 'urql'
-import { Provider as PortalProvider } from 'react-native-paper'
+import CalculatorProvider from './src/components/CalculatorProvider'
+import './src/fixtimerbug'
+import { AccountStack, RootStack } from './src/routes'
 
 const client = createClient({
   url: 'https://countries.trevorblades.com/'
@@ -63,7 +67,7 @@ const AppContainer = createAppContainer(
     },
     {
       defaultNavigationOptions: ({ navigation }) => ({
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        tabBarIcon: ({ focused }) => {
           const { routeName } = navigation.state
           let iconName
           if (routeName === 'Home') {
@@ -108,6 +112,14 @@ const AppContainer = createAppContainer(
 )
 
 export default function App() {
+  useEffect(() => {
+    Font.loadAsync({
+      'avenir-next-bold': require('./assets/fonts/AvenirNextLTPro-Bold.otf'),
+      'avenir-next-bold-cn': require('./assets/fonts/AvenirNextLTPro-BoldCn.otf'),
+      'avenir-next-regular': require('./assets/fonts/AvenirNextLTPro-Regular.otf')
+    })
+  }, [])
+
   return (
     <PortalProvider>
       <GQLProvider value={client}>
@@ -124,12 +136,3 @@ export default function App() {
 }
 
 AppRegistry.registerComponent('App', () => App)
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})

@@ -1,15 +1,16 @@
+import { AdMobBanner } from 'expo-ads-admob'
 import React from 'react'
 import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  View,
   ScrollView,
+  StatusBar,
   StyleProp,
+  View,
   ViewStyle
 } from 'react-native'
 import { Theme } from 'react-native-paper/lib/typescript/src/types'
-import { AdMobBanner } from 'expo-ads-admob'
 
 interface Props {
   children?: React.ReactNode
@@ -27,6 +28,7 @@ const Container: React.FC<Props> = ({ children, theme }) => {
       <SafeAreaView
         style={{ flex: 1, backgroundColor: theme.colors.background }}
       >
+        <StatusBar backgroundColor='blue' barStyle='light-content' />
         <ScrollView
           contentContainerStyle={{
             paddingHorizontal: 25,
@@ -36,16 +38,16 @@ const Container: React.FC<Props> = ({ children, theme }) => {
           keyboardShouldPersistTaps='handled'
         >
           {children}
-          <View style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
-            <AdMobBanner
-              bannerSize='banner'
-              adUnitID='ca-app-pub-3940256099942544/6300978111' // Test ID, Replace with your-admob-unit-id
-              testDeviceID='EMULATOR'
-              servePersonalizedAds // true or false
-              onDidFailToReceiveAdWithError={() => console.log('load ad fail')}
-            />
-          </View>
         </ScrollView>
+        <View style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+          <AdMobBanner
+            bannerSize='banner'
+            adUnitID='ca-app-pub-3940256099942544/6300978111' // Test ID, Replace with your-admob-unit-id
+            testDeviceID='EMULATOR'
+            servePersonalizedAds // true or false
+            onDidFailToReceiveAdWithError={() => console.log('load ad fail')}
+          />
+        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   )

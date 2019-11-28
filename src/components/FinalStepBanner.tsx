@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { Image } from 'react-native'
 import { Banner } from 'react-native-paper'
-import { Image, Animated, Easing } from 'react-native'
 
 const FinalStepBanner: React.FC<{}> = () => {
   const [visible, setVisible] = useState<boolean>(false)
@@ -32,7 +32,7 @@ const FinalStepBanner: React.FC<{}> = () => {
       style={{ marginBottom: 8 }}
     >
       Use the currency picker to select your local currency and get the currency
-      rate again USD.
+      rate against USD.
     </Banner>
   )
 }

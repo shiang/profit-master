@@ -17,6 +17,7 @@
     "date-fns": "^2.8.1",
     "expo": "^35.0.0",
     "expo-ads-admob": "~7.0.0",
+    "expo-font": "~7.0.0",
     "firebase": "^7.5.0",
     "formik": "^2.0.4",
     "graphql": "^14.5.8",
