@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Profit Master",
-    "slug": "profit-master",
+    "name": "Profito",
+    "slug": "profito",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -25,11 +25,13 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "digital.ribbons.profito",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-3940256099942544/6300978111"
       }
     },
     "android": {
+      "package": "digital.ribbons.profito",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-3940256099942544/6300978111"
       }

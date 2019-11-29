@@ -1,7 +1,13 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import useForm from 'react-hook-form'
-import { Button as NativeButton, Picker, Text, View } from 'react-native'
+import {
+  Button as NativeButton,
+  Keyboard,
+  Picker,
+  Text,
+  View
+} from 'react-native'
 import {
   ActivityIndicator,
   Button,
@@ -146,12 +152,17 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
   }, [register])
 
   const [currency, setCurrency] = useState<string>('')
+  const [isFetchingCurrencyRate, setIsFetchingCurrencyRate] = useState<boolean>(
+    false
+  )
   const getCurrencyRate = async () => {
+    setIsFetchingCurrencyRate(true)
     try {
       const data = await axios.get(
         `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${currency}&to_currency=USD&apikey=${fxAPIKey}`
       )
       if (data.status === 200) {
+        setIsFetchingCurrencyRate(false)
         setValue(
           FieldName.forexRate,
           Number(
@@ -161,6 +172,7 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
       }
     } catch (err) {
       if (err) {
+        setIsFetchingCurrencyRate(false)
         setDisplaySnackbar(true)
       }
     }
@@ -272,7 +284,11 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
           onChangeText={text => setValue(FieldName.forexRate, text)}
           error={hasErrors(FieldName.forexRate)}
           onFocus={() => clearError(FieldName.forexRate)}
-          value={forexRateValue as string}
+          value={
+            isFetchingCurrencyRate
+              ? 'Retrieving...'
+              : (forexRateValue as string)
+          }
         />
         {errors && errors.forexRate && (
           <Text style={{ color: theme.colors.error, marginBottom: 5 }}>
@@ -282,7 +298,9 @@ const FinalStep: React.FC<Props> & NavOptions = ({ navigation, theme }) => {
 
         <NativeButton
           title='Or use currency picker'
+          disabled={isFetchingCurrencyRate}
           onPress={() => {
+            Keyboard.dismiss()
             showModal()
           }}
         />
